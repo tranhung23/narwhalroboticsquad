@@ -57,7 +57,7 @@ int main(void)
 
 	float dt = 0;
 
-
+	sync_printf(" %f ", f);
 	while (1)
 	{
 		//I2C_WriteDevice(I2C_COM2, 0x52, 100, 1);
