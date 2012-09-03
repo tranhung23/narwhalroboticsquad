@@ -82,11 +82,11 @@ const uint32_t I2C_RX_BUFFER[I2Cn] = { (uint32_t) I2C1_RX_Buffer, (uint32_t) I2C
 
 I2C_TRANSMISSION_TypeDef * I2C_TRANSMISSION[I2Cn] = { &I2C1_TransmissionObj, &I2C2_TransmissionObj };
 
-const uint32_t I2C_PREPRIO[I2Cn] = { I2C1_PREPRIO, I2C2_PREPRIO };
-const uint32_t I2C_SUBPRIO[I2Cn] = { I2C1_SUBPRIO, I2C2_SUBPRIO };
+const uint8_t I2C_PREPRIO[I2Cn] = { I2C1_PREPRIO, I2C2_PREPRIO };
+const uint8_t I2C_SUBPRIO[I2Cn] = { I2C1_SUBPRIO, I2C2_SUBPRIO };
 
-const uint32_t I2C_EVENT_IRQn[I2Cn] = { I2C1_Event_IRQn, I2C2_Event_IRQn };
-const uint32_t I2C_ERROR_IRQn[I2Cn] = { I2C1_Error_IRQn, I2C2_Error_IRQn };
+const uint8_t I2C_EVENT_IRQn[I2Cn] = { I2C1_Event_IRQn, I2C2_Event_IRQn };
+const uint8_t I2C_ERROR_IRQn[I2Cn] = { I2C1_Error_IRQn, I2C2_Error_IRQn };
 
 DMA_InitTypeDef DMA_InitStructure;
 NVIC_InitTypeDef NVIC_InitStructure;
@@ -99,6 +99,7 @@ void I2C_Device_Init(I2C_COM_TypeDef COM)
 {
 	/* IOE_I2C configuration */
 	I2C_DeInit(I2C[COM]);
+
 	I2C_InitStructure.I2C_Mode = I2C_Mode_I2C;
 	I2C_InitStructure.I2C_DutyCycle = I2C_DutyCycle_2;
 	I2C_InitStructure.I2C_OwnAddress1 = 0x00;
@@ -106,14 +107,14 @@ void I2C_Device_Init(I2C_COM_TypeDef COM)
 	I2C_InitStructure.I2C_AcknowledgedAddress = I2C_AcknowledgedAddress_7bit;
 	I2C_InitStructure.I2C_ClockSpeed = I2C_SPEED[COM];
 
-	/* Configure and enable I2C DMA TX Channel interrupt */
+	/* Configure and enable I2C TX Channel interrupt */
 	NVIC_InitStructure.NVIC_IRQChannel = I2C_ERROR_IRQn[COM];
 	NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = I2C_PREPRIO[COM];
 	NVIC_InitStructure.NVIC_IRQChannelSubPriority = I2C_SUBPRIO[COM];
 	NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
 	NVIC_Init(&NVIC_InitStructure);
 
-	/* Configure and enable I2C DMA TX Channel interrupt */
+	/* Configure and enable I2C TX Channel interrupt */
 	NVIC_InitStructure.NVIC_IRQChannel = I2C_EVENT_IRQn[COM];
 	NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = I2C_PREPRIO[COM];
 	NVIC_InitStructure.NVIC_IRQChannelSubPriority = I2C_SUBPRIO[COM];
@@ -186,13 +187,15 @@ void I2C_LowLevel_Init(I2C_COM_TypeDef COM)
 	/* Enable the DMA clock */
 	RCC_AHB1PeriphClockCmd(I2C_DMA_CLK[COM], ENABLE);
 
-	/* Clear any pending flag on Rx Stream  */
+	/*Just diable the steams to do ops on them*/
+	/* Clear any pending flag on Tx Stream  */
 	DMA_ClearFlag(I2C_DMA_STREAM_TX[COM], I2C_TX_DMA_FLAG_FEIF[COM] | I2C_TX_DMA_FLAG_DMEIF[COM] | I2C_TX_DMA_FLAG_TEIF[COM] | I2C_TX_DMA_FLAG_HTIF[COM] | I2C_TX_DMA_FLAG_TCIF[COM]);
 	/* Disable the EE I2C Tx DMA stream */
 	DMA_Cmd(I2C_DMA_STREAM_TX[COM], DISABLE);
 	/* Configure the DMA stream for the EE I2C peripheral TX direction */
 	DMA_DeInit(I2C_DMA_STREAM_TX[COM]);
 
+	/*DMA Init of both RX and TX*/
 	DMA_InitStructure.DMA_Channel = I2C_DMA_CHANNEL[COM];
 	DMA_InitStructure.DMA_PeripheralBaseAddr = (uint32_t) I2C_DR_Address[COM];
 	DMA_InitStructure.DMA_Memory0BaseAddr = (uint32_t) I2C_TX_BUFFER[COM]; /* This parameter will be configured durig communication */
@@ -309,6 +312,7 @@ uint8_t I2C_ReadDeviceRegister(I2C_COM_TypeDef COM, uint8_t DeviceAddr, uint8_t 
 
 uint8_t I2C_ReadDeviceRegister_async(I2C_COM_TypeDef COM, uint8_t DeviceAddr, uint8_t RegisterAddr, uint16_t RX_DataLength, uint32_t ReadBuffer)
 {
+	// if I2C port is busy, return
 	if (I2C_GetFlagStatus(I2C[COM], I2C_FLAG_BUSY))
 		return -1;
 
@@ -439,12 +443,14 @@ void I2C_Event_Helper(I2C_COM_TypeDef I2C_COM)
 		{
 			I2C_Send7bitAddress(I2C[I2C_COM], I2C_TRANSMISSION[I2C_COM]->DeviceAddr, I2C_Direction_Transmitter);
 
+			// if want to send data to device without a register
 			if (I2C_TRANSMISSION[I2C_COM]->DeviceDataOnly)
 				newState = SEND_DATA;
 			else
 				newState = SEND_REG_ADDR;
 		}
 		break;
+		// DMA send data
 	case SEND_REG_ADDR:
 		if (I2C_GetITStatus(I2C[I2C_COM], I2C_IT_ADDR))
 		{
@@ -455,6 +461,7 @@ void I2C_Event_Helper(I2C_COM_TypeDef I2C_COM)
 				newState = START_RX;
 		}
 		break;
+		// only send one byte of data
 	case SEND_DATA:
 		if (I2C_GetITStatus(I2C[I2C_COM], I2C_IT_ADDR))
 		{
@@ -465,11 +472,16 @@ void I2C_Event_Helper(I2C_COM_TypeDef I2C_COM)
 		break;
 	case SEND_REG_DATA: //TODO: handle multipal transmission by use of DMA.
 
-		if (I2C_GetITStatus(I2C[I2C_COM], I2C_IT_TXE) & I2C_TRANSMISSION[I2C_COM]->TX_DataLength)
-		{
-			I2C_SendData(I2C[I2C_COM], I2C_TRANSMISSION[I2C_COM]->RegisterValue);
-			I2C_TRANSMISSION[I2C_COM]->TX_DataLength--;
-			newState = STOP;
+		if (I2C_TRANSMISSION[I2C_COM]->TX_DataLength == 1) {
+			if (I2C_GetITStatus(I2C[I2C_COM], I2C_IT_TXE)
+					& I2C_TRANSMISSION[I2C_COM]->TX_DataLength) {
+				I2C_SendData(I2C[I2C_COM],
+						I2C_TRANSMISSION[I2C_COM]->RegisterValue);
+				I2C_TRANSMISSION[I2C_COM]->TX_DataLength--;
+				newState = STOP;
+			}
+		} else {
+
 		}
 		break;
 

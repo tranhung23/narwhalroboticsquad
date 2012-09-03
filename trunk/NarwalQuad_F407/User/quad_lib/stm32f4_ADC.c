@@ -6,16 +6,9 @@
  */
 
 #include "stm32f4_ADC.h"
-
+#include "stm32f4_USART.h"
 /*TODO: clean up code*/
-#define ADC_CCR_ADDRESS    ((uint32_t)0x40012308)
 
-void ADC_Sensor_DMA_Config(void);
-void ADC_Sensor_GPIO_Config(void);
-void ADC1_Sensor_Config(void);
-void ADC2_Sensor_Config(void);
-
-void ADC_print(void);
 
 
 /* ADC1 - CH1 - G_X - PA1
@@ -26,7 +19,7 @@ void ADC_print(void);
  * ADC2 - CH5 - G_Y - PA5
  * ADC2 - CH6 - G_Z - PA6
  */
-
+//TODO: Clean up this file
 
 
 void ADC12_Init(void)

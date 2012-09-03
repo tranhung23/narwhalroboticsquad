@@ -24,7 +24,8 @@
 static int Quad_Ctrl_Angle[CTRL_MOTORn] = {0, 0, 0, 0};
 
 /*Cap pitch and roll at 45 degrees for now, throttle at 200, pitch, roll, yaw, throttle*/
-static int Quad_Ctrl_Angle_Limit[CTRL_LINEn] = {45, 45, 180, 200};
+static int Quad_Ctrl_Limit_H[CTRL_LINEn] = {45, 45, 180, 200};
+static int Quad_Ctrl_Limit_L[CTRL_LINEn] = {-45, -45, -180, 0};
 
 typedef enum
 {
@@ -34,11 +35,11 @@ typedef enum
 	THROTTLE
 }CTRL_LINES_TypeDef;
 
-static int RC_Range = 0;
-static int RC_Range_Half = 0;
 
-void MotorControl_SetAngle(int rawValue, PWM_CTRL_IN_TypeDef CH);
 void MotorControl_Init(void);
 
+void MotorControl_SetAngle(int rawValue, PWM_CTRL_IN_TypeDef CH);
+void MotorControl_CalculateIntegralControl_RC(void);
+int MotorControl_GetControlAngle(PWM_CTRL_IN_TypeDef CH);
 
 #endif /* MOTOR_CONTROL_H_ */

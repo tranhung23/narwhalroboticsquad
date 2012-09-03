@@ -46,9 +46,13 @@ typedef enum
 }PID_ITEM_TypeDef;
 
 
+/*PID array values, epsilon is the min value to do integral*/
 static float PID_Epsilon[PIDn] = {PITCH_epsilon, ROLL_epsilon, YAW_epsilon};
+
+/*Contains the last time that the dirivative changed*/
 static float PID_DT[PIDn] = {PITCH_dt, ROLL_dt, YAW_dt};
 
+/*the max that the pitch and yaw roll should be set at*/
 static float PID_MAX[PIDn] = {PITCH_MAX, ROLL_MAX, YAW_MAX};
 static float PID_MIN[PIDn] = {PITCH_MIN, ROLL_MIN, YAW_MIN};
 
@@ -56,7 +60,10 @@ static float PID_Kp[PIDn] = {PITCH_Kp, ROLL_Kp, YAW_Kp};
 static float PID_Kd[PIDn] = {PITCH_Kd, ROLL_Kd, YAW_Kd};
 static float PID_Ki[PIDn] = {PITCH_Ki, ROLL_Ki, YAW_Ki};
 
+/*Previous error*/
 static float PID_PreError[PIDn]  = {0.0,0.0,0.0};
+
+/*Integral value*/
 static float PID_Integral[PIDn]  = {0.0,0.0,0.0};
 
 

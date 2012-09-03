@@ -65,6 +65,8 @@ void process_gyro(float gx, float gy, float gz, float dT);
 void process_mag(float mx, float my, float mz);
 void process_acc(float ax, float ay, float az);
 
+void process_magaccvector(void);
+
 
 void ekf_print(void);
 
