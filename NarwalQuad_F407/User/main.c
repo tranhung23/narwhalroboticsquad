@@ -47,7 +47,9 @@ int main(void)
 	long current_time_ms_print = 0;
 	unsigned long long current_time_gyro = 0;
 
+	/*Initlization method*/
 	quad_init();
+
 	float f = 0.324;
 
 
@@ -62,8 +64,7 @@ int main(void)
 	{
 		//I2C_WriteDevice(I2C_COM2, 0x52, 100, 1);
 
-		int z = RC_Control[0];
-		sync_printf("Timer 1: %d", RC_Control[0]);
+		sync_printf("Timer 1: %d", MotorControl_GetControlAngle(CH1));
 		for (int i = 0; i < 16800000; i++)
 				;
 		//ADC_print();
@@ -137,7 +138,6 @@ void IMU_Init(void)
 
 	/*Start the magnometer*/
 	Sensors_Init(MAG);
-
 	ekf_init();
 	ADC12_Init();
 }
@@ -166,7 +166,7 @@ void quad_init(void)
 	/* enable EEPROM GPIO */
 	GPIOInit(EEPROM);
 
-	/*If systick cannot be set, light up LED 3..*/
+	/*If systick can be set, light up LED 3..*/
 	if (SysTick_Config(systick_divider))
 	{
 		GPIOOn(LED3);
@@ -174,8 +174,6 @@ void quad_init(void)
 
 	/*USART*/
 	COMInit(USART_COM1);
-
-	sync_printf("HI");
 
 	/*init i2c modules*/
 	I2C_LowLevel_Init(I2C_COM1);

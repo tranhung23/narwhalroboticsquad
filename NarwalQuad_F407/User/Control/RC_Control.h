@@ -11,15 +11,9 @@
 #define RC_CTRLn 4
 
 
-//PITCH, ROLL, YAW, THROTTLE
-volatile static int RC_Control[RC_CTRLn];
-
 /*Define the mins and max of the control stick*/
 static int RC_Control_Min = 1000;
 static int RC_Control_Max = 2000;
-
-
-
 
 
 

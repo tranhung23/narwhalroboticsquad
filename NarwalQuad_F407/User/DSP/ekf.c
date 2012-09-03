@@ -86,11 +86,7 @@ static float MagFrameM[3][3];
 /*state vector*/
 static float state[7];
 
-void ekf_init(void)
-{
-	float MagCrossAcc[3];
-	float MagCross[3];
-
+void ekf_init(void) {
 	/*set the state vector*/
 	state_q0 = 1.00;
 	state_q1 = state_q2 = state_q3 = state_gb0 = state_gb1 = state_gb2 = 0.00;
@@ -118,12 +114,12 @@ void ekf_init(void)
 	mag_cali_zy = MAG_CZY;
 	mag_cali_zz = MAG_CZZ;
 
-	/*set Acc Ref vectors*/
+	/*set Acc Ref vectors, default vector when device is sitting still on level platform*/
 	acc_ref[0] = acc_ref_x = ACC_RX;
 	acc_ref[1] = acc_ref_y = ACC_RY;
 	acc_ref[2] = acc_ref_z = ACC_RZ;
 
-	/*set Mag Ref vectors*/
+	/*set Acc Ref vectors, default vector when device is sitting still on level platform*/
 	mag_ref[0] = mag_ref_x = MAG_RX;
 	mag_ref[1] = mag_ref_y = MAG_RY;
 	mag_ref[2] = mag_ref_z = MAG_RZ;
@@ -162,6 +158,15 @@ void ekf_init(void)
 	Fj[5][5] = 1;
 	Fj[6][6] = 1;
 
+	process_magaccvector();
+	//READ ALL RAM VARIABLES!
+}
+
+void process_magaccvector(void) {
+
+	float MagCrossAcc[3];
+	float MagCross[3];
+
 	/*magnetomer rotational reference matrix*/
 	/*
 	 sh1 = ae;
@@ -178,7 +183,9 @@ void ekf_init(void)
 
 	VectorCross(acc_ref, mag_ref, MagCrossAcc);
 
-	float MagCrossAccNorm = sqrt(MagCrossAcc[0] * MagCrossAcc[0] + MagCrossAcc[1] * MagCrossAcc[1] + MagCrossAcc[2] * MagCrossAcc[2]);
+	float MagCrossAccNorm = sqrt(
+			MagCrossAcc[0] * MagCrossAcc[0] + MagCrossAcc[1] * MagCrossAcc[1]
+					+ MagCrossAcc[2] * MagCrossAcc[2]);
 
 	MagCrossAcc[0] = MagCrossAcc[0] / MagCrossAccNorm;
 	MagCrossAcc[1] = MagCrossAcc[1] / MagCrossAccNorm;
@@ -193,11 +200,9 @@ void ekf_init(void)
 	MagRefM[2][1] = MagCross[1];
 	MagRefM[2][2] = MagCross[2];
 
-	//READ ALL RAM VARIABLES!
 }
 
-void process_gyro(float gx, float gy, float gz, float dT)
-{
+void process_gyro(float gx, float gy, float gz, float dT) {
 	float quatnorm;
 
 	float halfdt = 0.5 * dT;
@@ -212,16 +217,22 @@ void process_gyro(float gx, float gy, float gz, float dT)
 	gy = ((gy - gyro_bias_y + state_gb1) * GYRO_DEGLSB) * DEG2RAD;
 	gz = ((gz - gyro_bias_z + state_gb2) * GYRO_DEGLSB) * DEG2RAD;
 	/*add gyro rotation into quaternion*/
-	state_q0 = state_q0 + ((.5) * (-gx * state_q1 - gy * state_q2 - gz * state_q3) * dT);
-	state_q1 = state_q1 + ((.5) * (gx * state_q0 - gy * state_q3 + gz * state_q2) * dT);
-	state_q2 = state_q2 + ((.5) * (gx * state_q3 + gy * state_q0 - gz * state_q1) * dT);
-	state_q3 = state_q3 + ((.5) * (-gx * state_q2 + gy * state_q1 + gz * state_q0) * dT);
+	state_q0 = state_q0
+			+ ((.5) * (-gx * state_q1 - gy * state_q2 - gz * state_q3) * dT);
+	state_q1 = state_q1
+			+ ((.5) * (gx * state_q0 - gy * state_q3 + gz * state_q2) * dT);
+	state_q2 = state_q2
+			+ ((.5) * (gx * state_q3 + gy * state_q0 - gz * state_q1) * dT);
+	state_q3 = state_q3
+			+ ((.5) * (-gx * state_q2 + gy * state_q1 + gz * state_q0) * dT);
 	state_gb0 = state_gb0 + 0;
 	state_gb1 = state_gb1 + 0;
 	state_gb2 = state_gb2 + 0;
 
 	/*normlize quaternions*/
-	quatnorm = sqrtf((state_q0 * state_q0) + (state_q1 * state_q1) + (state_q2 * state_q2) + (state_q3 * state_q3));
+	quatnorm = sqrtf(
+			(state_q0 * state_q0) + (state_q1 * state_q1)
+					+ (state_q2 * state_q2) + (state_q3 * state_q3));
 	state_q0 = state_q0 / quatnorm;
 	state_q1 = state_q1 / quatnorm;
 	state_q2 = state_q2 / quatnorm;
@@ -267,8 +278,7 @@ void process_gyro(float gx, float gy, float gz, float dT)
 
 }
 
-void process_mag(float mx, float my, float mz)
-{
+void process_mag(float mx, float my, float mz) {
 	float mag_norm;
 	float MagCrossAccNorm;
 	float mag_triad[3][3];
@@ -329,7 +339,9 @@ void process_mag(float mx, float my, float mz)
 
 	VectorCross(acc_frame, mag_frame, AccCrossMag);
 
-	MagCrossAccNorm = sqrt(AccCrossMag[0] * AccCrossMag[0] + AccCrossMag[1] * AccCrossMag[1] + AccCrossMag[2] * AccCrossMag[2]);
+	MagCrossAccNorm = sqrt(
+			AccCrossMag[0] * AccCrossMag[0] + AccCrossMag[1] * AccCrossMag[1]
+					+ AccCrossMag[2] * AccCrossMag[2]);
 
 	/*r2'*/
 	AccCrossMag[0] = MagFrameM[0][1] = AccCrossMag[0] / MagCrossAccNorm;
@@ -424,8 +436,7 @@ void process_mag(float mx, float my, float mz)
 
 }
 
-void process_acc(float ax, float ay, float az)
-{
+void process_acc(float ax, float ay, float az) {
 	float acc_norm;
 	float Zex;
 	float Zey;
@@ -524,7 +535,6 @@ void process_acc(float ax, float ay, float az)
 	MMsub((float*) P, (float*) swap2, (float*) P, 7, 7);
 }
 
-void ekf_print(void)
-{
+void ekf_print(void) {
 	async_printf("%f %f %f %f\r\n", state_q0, state_q1, state_q2, state_q3);
 }

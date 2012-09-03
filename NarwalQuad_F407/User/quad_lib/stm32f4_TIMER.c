@@ -40,9 +40,9 @@ const uint16_t PWM_IN_TIMER_CHR[RCn] = { RC1_TIMER_CHR, RC2_TIMER_CHR, RC3_TIMER
 const uint16_t PWM_IN_TIMER_CHF[RCn] = { RC1_TIMER_CHF, RC2_TIMER_CHF, RC3_TIMER_CHF, RC4_TIMER_CHF };
 const uint16_t PWM_IN_TIMER_IRQ[RCn] = { RC1_TIMER_IRQ, RC2_TIMER_IRQ, RC3_TIMER_IRQ, RC4_TIMER_IRQ };
 
-static uint16_t PWM_Timer_Duty_Helper(uint16_t TI_Rising, uint16_t TI_Falling)
+static uint32_t PWM_Timer_Duty_Helper(uint32_t TI_Rising, uint32_t TI_Falling)
 {
-	uint16_t duty = TI_Falling - TI_Rising;
+	uint32_t duty = TI_Falling - TI_Rising;
 
 	if (duty > 0)
 		return duty;
@@ -51,8 +51,8 @@ static uint16_t PWM_Timer_Duty_Helper(uint16_t TI_Rising, uint16_t TI_Falling)
 
 static void PWM_Timer_IRQ_Helper(PWM_CTRL_IN_TypeDef CH)
 {
-	uint16_t TI_Rising;
-	uint16_t TI_Falling;
+	uint32_t TI_Rising;
+	uint32_t TI_Falling;
 
 	/*Each calculation only pertians to channel 1 or 3 currently, if 1 or 3 is triggered it will calculate the PWM width.*/
 	if (TIM_GetITStatus(PWM_IN_TIMER[CH], TIM_IT_CC1) != RESET)
@@ -71,14 +71,12 @@ static void PWM_Timer_IRQ_Helper(PWM_CTRL_IN_TypeDef CH)
 		TI_Rising = TIM_GetCapture4(PWM_IN_TIMER[CH]);
 		TI_Falling = TIM_GetCapture3(PWM_IN_TIMER[CH]);
 		MotorControl_SetAngle(PWM_Timer_Duty_Helper(TI_Rising, TI_Falling), CH);
-
-		//RC_Control[CH] = PWM_Timer_Duty_Helper(TI_Rising, TI_Falling);
 	}
 
 
 
 #if defined(DEBUG)
-	async_printf("%d ch: %d\r\n", RC_Control[CH], CH);
+	async_printf("%d ch: %d\r\n", PWM_Timer_Duty_Helper(TI_Rising, TI_Falling), CH);
 #endif
 }
 
