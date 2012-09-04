@@ -4,6 +4,7 @@
 #include "stm32f4xx_usart.h"
 #include "stm32f4xx_rcc.h"
 
+#include "quad_lib/stm32f4_ADC.h"
 #include "quad_lib/stm32f4_quad.h"
 #include "quad_lib/stm32f4_TIMER.h"
 #include "quad_lib/sensors.h"
@@ -17,6 +18,7 @@
 
 /*Temps*/
 #include "Control/RC_Control.h"
+#include "quad_lib/EEPROM.h"
 
 #define systick_divider (SystemCoreClock / 1000)
 
@@ -64,11 +66,11 @@ int main(void)
 	{
 		//I2C_WriteDevice(I2C_COM2, 0x52, 100, 1);
 
-		sync_printf("Timer 1: %d", MotorControl_GetControlAngle(CH1));
-		for (int i = 0; i < 16800000; i++)
+		//sync_printf("Timer 1: %d", MotorControl_GetControlAngle(CH1));
+		for (int i = 0; i < 1680000; i++)
 				;
 		//ADC_print();
-		//Sensors_Read(MAG);
+		Sensors_Read(MAG);
 //		Sensors_Read(MAG);
 
 		//Sensors_Read(MAG);
@@ -183,7 +185,7 @@ void quad_init(void)
 	EXTILine0_Config();
 
 	/*Init the IMU sensors*/
-	//IMU_Init();
+	IMU_Init();
 
 	/*Initilize the motor controls*/
 	MotorControl_Init();
@@ -195,6 +197,8 @@ void quad_init(void)
 	TIM_PWM_Ctrl_In_Init(CH4);
 
 	//TIM_Init();
+
+	//EEPROM_init();
 }
 
 

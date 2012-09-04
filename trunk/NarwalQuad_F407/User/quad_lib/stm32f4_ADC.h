@@ -33,5 +33,6 @@ void ADC1_Sensor_Config(void);
 void ADC2_Sensor_Config(void);
 
 void ADC_print(void);
+void ADC12_Init(void);
 
 #endif /* ADC_SENSORS_H_ */

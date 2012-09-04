@@ -46,7 +46,9 @@ typedef struct
 {
 	uint8_t DataDirection;
 	uint8_t DeviceAddr;
-	uint8_t RegisterAddr;
+	uint32_t RegisterAddrs;
+	uint16_t RegisterAddrLength;
+	uint16_t RegisterAddrPtr;
 	uint8_t RegisterValue;
 	uint16_t TX_DataLength;
 	uint16_t RX_DataLength;
@@ -58,7 +60,7 @@ typedef struct
 
 typedef enum
 {
-	IDLE, START_RX, START_TX, START_DMA, SEND_DEVICE_ADDR, SEND_ADDR_RX, SEND_REG_ADDR, SEND_DATA, SEND_REG_DATA, STOP
+	IDLE, START_RX, START_TX, START_DMA, SEND_DEVICE_ADDR, SEND_ADDR_RX, SEND_REG_ADDR,SEND_MULTI_REG_ADDR, SEND_DATA, SEND_REG_DATA, STOP
 } I2C_IRQ_STATE;
 
 /*LED indicator Lights*/
@@ -279,11 +281,11 @@ void I2C_LowLevel_Init(I2C_COM_TypeDef COM);
 
 uint8_t I2C_ReadDeviceRegister(I2C_COM_TypeDef COM, uint8_t DeviceAddr, uint8_t RegisterAddr, uint16_t RX_DataLength, uint32_t ReadBuffer);
 uint8_t I2C_ReadDeviceRegister_async(I2C_COM_TypeDef COM, uint8_t DeviceAddr, uint8_t RegisterAddr, uint16_t RX_DataLength, uint32_t ReadBuffer);
-
+uint8_t I2C_ReadDeviceLongRegister_async(I2C_COM_TypeDef COM, uint8_t DeviceAddr, uint32_t RegisterAddrsPointer, uint16_t RegisterLength, uint16_t RX_DataLength , uint32_t ReadBuffer);
 uint8_t I2C_WriteDeviceRegister(I2C_COM_TypeDef COM, uint8_t DeviceAddr, uint8_t RegisterAddr, uint8_t RegisterValue, uint8_t Tx_dataLength);
 uint8_t I2C_WriteDeviceRegister_async(I2C_COM_TypeDef COM, uint8_t DeviceAddr, uint8_t RegisterAddr, uint8_t RegisterValue, uint8_t Tx_dataLength);
 uint8_t I2C_WriteDeviceRegisterBuffer_async(I2C_COM_TypeDef COM, uint8_t DeviceAddr, uint8_t RegisterAddr, uint32_t WriteBuffer, uint8_t TX_DataLength);
-
+uint8_t I2C_WriteDeviceLongRegister_async(I2C_COM_TypeDef COM, uint8_t DeviceAddr, uint32_t RegisterAddrsPointer, uint16_t RegisterLength, uint16_t TX_DataLength , uint32_t WriteBuffer);
 uint8_t I2C_WriteDevice(I2C_COM_TypeDef COM, uint8_t DeviceAddr, uint8_t data, uint8_t Tx_dataLength);
 uint8_t I2C_WriteDevice_async(I2C_COM_TypeDef COM, uint8_t DeviceAddr, uint8_t data, uint8_t Tx_dataLength);
 
