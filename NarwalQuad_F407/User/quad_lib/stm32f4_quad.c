@@ -22,9 +22,6 @@ unsigned char I2C1_RX_Buffer[256];
 unsigned char I2C2_TX_Buffer[256];
 unsigned char I2C2_RX_Buffer[256];
 
-static uint8_t I2C1_STATE = IDLE;
-static uint8_t I2C2_STATE = IDLE;
-
 static uint8_t I2C_STATE[I2Cn] = { IDLE, IDLE };
 static I2C_TRANSMISSION_TypeDef I2C1_TransmissionObj = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
 static I2C_TRANSMISSION_TypeDef I2C2_TransmissionObj = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
@@ -270,24 +267,8 @@ uint8_t I2C_WriteDeviceRegister(I2C_COM_TypeDef COM, uint8_t DeviceAddr, uint8_t
 /*Writes to the register async*/
 uint8_t I2C_WriteDeviceRegister_async(I2C_COM_TypeDef COM, uint8_t DeviceAddr, uint8_t RegisterAddr, uint8_t RegisterValue, uint8_t Tx_dataLength)
 {
-	if (I2C_GetFlagStatus(I2C[COM], I2C_FLAG_BUSY))
-	{
-		return -1;
-	}
-	I2C_TRANSMISSION[COM]->DeviceAddr = DeviceAddr;
-	I2C_TRANSMISSION[COM]->RegisterAddr = RegisterAddr;
-	I2C_TRANSMISSION[COM]->RegisterValue = RegisterValue;
-	I2C_TRANSMISSION[COM]->DataDirection = I2C_DIRECTION_TX;
-	I2C_TRANSMISSION[COM]->TX_DataLength = 1;
-
-	//I2C1_STATE = SEND_ADDR_TX;
-	I2C_STATE[COM] = SEND_DEVICE_ADDR;
-	I2C_GenerateSTART(I2C[COM], ENABLE);
-
-	return 1;
+	return I2C_WriteDeviceRegisterBuffer_async(COM, DeviceAddr, RegisterAddr, (uint32_t)RegisterValue, Tx_dataLength);
 }
-
-
 
 /*Write device register async with a buffer*/
 uint8_t I2C_WriteDeviceRegisterBuffer_async(I2C_COM_TypeDef COM, uint8_t DeviceAddr, uint8_t RegisterAddr, uint32_t WriteBuffer, uint8_t TX_DataLength)
@@ -298,13 +279,16 @@ uint8_t I2C_WriteDeviceRegisterBuffer_async(I2C_COM_TypeDef COM, uint8_t DeviceA
 	}
 	I2C_TRANSMISSION[COM]->DeviceAddr = DeviceAddr;
 	I2C_TRANSMISSION[COM]->RegisterAddr = RegisterAddr;
-	I2C_TRANSMISSION[COM]->RegisterValue = 0;
+	I2C_TRANSMISSION[COM]->RegisterValue = (uint8_t)WriteBuffer;
 	I2C_TRANSMISSION[COM]->DataDirection = I2C_DIRECTION_TX;
 	I2C_TRANSMISSION[COM]->TX_DataLength = TX_DataLength;
 
-	I2C_DMA_STREAM_TX[COM]->NDTR = TX_DataLength;
-	I2C_DMA_STREAM_TX[COM]->M0AR = WriteBuffer;
-	I2C_DMACmd(I2C[COM], ENABLE);
+	if(TX_DataLength > 1)
+	{
+		I2C_DMA_STREAM_TX[COM]->NDTR = TX_DataLength;
+		I2C_DMA_STREAM_TX[COM]->M0AR = WriteBuffer;
+		I2C_DMACmd(I2C[COM], ENABLE);
+	}
 
 	//I2C1_STATE = SEND_ADDR_TX;
 	I2C_STATE[COM] = SEND_DEVICE_ADDR;
@@ -314,7 +298,18 @@ uint8_t I2C_WriteDeviceRegisterBuffer_async(I2C_COM_TypeDef COM, uint8_t DeviceA
 }
 
 /*
+ *
+ *
+ *
+ *
+ *
+ *
  * I2C Read Register functions
+ *
+ *
+ *
+ *
+ *
  */
 
 uint8_t I2C_ReadDeviceRegister(I2C_COM_TypeDef COM, uint8_t DeviceAddr, uint8_t RegisterAddr, uint16_t RX_DataLength, uint32_t ReadBuffer)
@@ -325,6 +320,16 @@ uint8_t I2C_ReadDeviceRegister(I2C_COM_TypeDef COM, uint8_t DeviceAddr, uint8_t 
 	{
 	}
 	return 0;
+}
+
+// to read from a register that's more than one byte in length
+uint8_t I2C_ReadDeviceLongRegister_async(I2C_COM_TypeDef COM, uint8_t DeviceAddr, uint8_t *RegisterAddr, uint16_t RegisterLength,, uint16_t RX_DataLength, uint32_t ReadBuffer)
+{
+	// if I2C port is busy, return
+		if (I2C_GetFlagStatus(I2C[COM], I2C_FLAG_BUSY))
+			return -1;
+
+
 }
 
 uint8_t I2C_ReadDeviceRegister_async(I2C_COM_TypeDef COM, uint8_t DeviceAddr, uint8_t RegisterAddr, uint16_t RX_DataLength, uint32_t ReadBuffer)
