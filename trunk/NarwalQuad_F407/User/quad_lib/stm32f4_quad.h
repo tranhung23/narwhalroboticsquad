@@ -50,7 +50,7 @@ typedef struct
 	uint8_t RegisterValue;
 	uint16_t TX_DataLength;
 	uint16_t RX_DataLength;
-	uint8_t DeviceDataOnly;
+	uint8_t DeviceDataOnly; /*Depreciated*/
 	uint8_t var1;
 	uint8_t var2;
 	uint16_t var3;
@@ -58,7 +58,7 @@ typedef struct
 
 typedef enum
 {
-	IDLE, START_RX, START_TX, START_DMA, SEND_ADDR_TX, SEND_ADDR_RX, SEND_REG_ADDR, SEND_DATA, SEND_REG_DATA, STOP
+	IDLE, START_RX, START_TX, START_DMA, SEND_DEVICE_ADDR, SEND_ADDR_RX, SEND_REG_ADDR, SEND_DATA, SEND_REG_DATA, STOP
 } I2C_IRQ_STATE;
 
 /*LED indicator Lights*/
