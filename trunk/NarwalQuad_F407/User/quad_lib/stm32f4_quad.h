@@ -277,13 +277,15 @@ char * async_scanf(unsigned int length);
 void I2C_Device_Init(I2C_COM_TypeDef COM);
 void I2C_LowLevel_Init(I2C_COM_TypeDef COM);
 
-uint8_t I2C_WriteDeviceRegister(I2C_COM_TypeDef COM, uint8_t DeviceAddr, uint8_t RegisterAddr, uint8_t RegisterValue, uint8_t Tx_dataLength);
-uint8_t I2C_WriteDeviceRegister_async(I2C_COM_TypeDef COM, uint8_t DeviceAddr, uint8_t RegisterAddr, uint8_t RegisterValue, uint8_t Tx_dataLength);
 uint8_t I2C_ReadDeviceRegister(I2C_COM_TypeDef COM, uint8_t DeviceAddr, uint8_t RegisterAddr, uint16_t RX_DataLength, uint32_t ReadBuffer);
 uint8_t I2C_ReadDeviceRegister_async(I2C_COM_TypeDef COM, uint8_t DeviceAddr, uint8_t RegisterAddr, uint16_t RX_DataLength, uint32_t ReadBuffer);
+
+uint8_t I2C_WriteDeviceRegister(I2C_COM_TypeDef COM, uint8_t DeviceAddr, uint8_t RegisterAddr, uint8_t RegisterValue, uint8_t Tx_dataLength);
+uint8_t I2C_WriteDeviceRegister_async(I2C_COM_TypeDef COM, uint8_t DeviceAddr, uint8_t RegisterAddr, uint8_t RegisterValue, uint8_t Tx_dataLength);
+uint8_t I2C_WriteDeviceRegisterBuffer_async(I2C_COM_TypeDef COM, uint8_t DeviceAddr, uint8_t RegisterAddr, uint32_t WriteBuffer, uint8_t TX_DataLength);
+
 uint8_t I2C_WriteDevice(I2C_COM_TypeDef COM, uint8_t DeviceAddr, uint8_t data, uint8_t Tx_dataLength);
 uint8_t I2C_WriteDevice_async(I2C_COM_TypeDef COM, uint8_t DeviceAddr, uint8_t data, uint8_t Tx_dataLength);
-
 
 void I2C_Event_Helper(I2C_COM_TypeDef I2C_COM);
 void I2C_Error_Helper(I2C_COM_TypeDef I2C_COM);
