@@ -10,7 +10,7 @@
 #include "sensors.h"
 #include "../Control/RC_Control.h"
 
-#define DEBUG 0
+
 
 /*RC Control connected lines def, this is revision 1.0 of quadrotor control board.
  * TODO: Integate TImer9 and 12
