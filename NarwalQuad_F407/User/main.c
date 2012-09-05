@@ -198,7 +198,7 @@ void quad_init(void)
 
 	//TIM_Init();
 
-	//EEPROM_init();
+	EEPROM_init();
 }
 
 
