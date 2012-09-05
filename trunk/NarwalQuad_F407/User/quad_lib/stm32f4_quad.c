@@ -292,7 +292,15 @@ uint8_t I2C_WriteDeviceRegisterBuffer_async(I2C_COM_TypeDef COM, uint8_t DeviceA
 {
     return I2C_WriteDeviceLongRegister_async(COM, DeviceAddr, RegisterAddr, (RegisterAddr > -1) ? 1 : 0, TX_DataLength, WriteBuffer);
 }
+uint8_t I2C_WriteDeviceLongRegister(I2C_COM_TypeDef COM, uint8_t DeviceAddr, uint32_t RegisterAddrsPointer, uint16_t RegisterLength, uint16_t TX_DataLength, uint32_t WriteBuffer)
+{
+    I2C_WriteDeviceLongRegister_async(COM, DeviceAddr, RegisterAddrsPointer, RegisterLength, TX_DataLength, WriteBuffer);
+    while (I2C_GetFlagStatus(I2C[COM], I2C_FLAG_BUSY))
+    {
 
+    }
+    return 1;
+}
 // to write to a register that's more than one byte in length
 uint8_t I2C_WriteDeviceLongRegister_async(I2C_COM_TypeDef COM, uint8_t DeviceAddr, uint32_t RegisterAddrsPointer, uint16_t RegisterLength, uint16_t TX_DataLength, uint32_t WriteBuffer)
 {
@@ -308,10 +316,10 @@ uint8_t I2C_WriteDeviceLongRegister_async(I2C_COM_TypeDef COM, uint8_t DeviceAdd
     I2C_TRANSMISSION[COM]->RegisterAddrLength = RegisterLength;
     I2C_TRANSMISSION[COM]->RegisterAddrPtr = RegisterLength;
 
-    I2C_TRANSMISSION[COM]->RegisterValue = (uint8_t) (*(uint8_t *) WriteBuffer);
+    //TODO: If we dereference the write buffer, it breaks raw writes, but if we are to write a buffer then we need to dereference....
+    I2C_TRANSMISSION[COM]->RegisterValue = (uint8_t) (WriteBuffer);
     I2C_TRANSMISSION[COM]->DataDirection = I2C_DIRECTION_TX;
     I2C_TRANSMISSION[COM]->TX_DataLength = TX_DataLength;
-    //I2C_TRANSMISSION[COM]->RegisterMultiFlag = RegisterMultiFlag;
 
     if (TX_DataLength > 1)
     {
@@ -350,7 +358,15 @@ uint8_t I2C_ReadDeviceRegister(I2C_COM_TypeDef COM, uint8_t DeviceAddr, uint8_t 
     }
     return 0;
 }
+uint8_t I2C_ReadDeviceLongRegister(I2C_COM_TypeDef COM, uint8_t DeviceAddr, uint32_t RegisterAddrsPointer, uint16_t RegisterLength, uint16_t RX_DataLength, uint32_t ReadBuffer)
+{
+    I2C_ReadDeviceLongRegister_async(COM, DeviceAddr, RegisterAddrsPointer, RegisterLength, RX_DataLength, ReadBuffer);
 
+    while (I2C_GetFlagStatus(I2C[COM], I2C_FLAG_BUSY))
+    {
+    }
+    return 1;
+}
 // to read from a register that's more than one byte in length
 uint8_t I2C_ReadDeviceLongRegister_async(I2C_COM_TypeDef COM, uint8_t DeviceAddr, uint32_t RegisterAddrsPointer, uint16_t RegisterLength, uint16_t RX_DataLength, uint32_t ReadBuffer)
 {
@@ -368,7 +384,6 @@ uint8_t I2C_ReadDeviceLongRegister_async(I2C_COM_TypeDef COM, uint8_t DeviceAddr
     I2C_TRANSMISSION[COM]->RegisterValue = 0x0; /*This value is ignroed, but we are going to reset it here*/
     I2C_TRANSMISSION[COM]->DataDirection = I2C_DIRECTION_RX;
     I2C_TRANSMISSION[COM]->RX_DataLength = RX_DataLength;
-    //I2C_TRANSMISSION[COM]->RegisterMultiFlag = RegisterMultiFlag;
     /*Set the DMA streams*/
     I2C_DMA_STREAM_RX[COM]->NDTR = RX_DataLength;
     I2C_DMA_STREAM_RX[COM]->M0AR = ReadBuffer;
@@ -422,9 +437,26 @@ void I2C1_Error_IRQHandler(void)
     return;
 }
 
+// TODO: generalize COMs
 void I2C1_DMA_TX_IRQHandler(void)
 {
+    /* Check if the DMA transfer is complete */
+    if (DMA_GetFlagStatus(I2C_DMA_STREAM_TX[I2C_COM1], I2C_TX_DMA_FLAG_TCIF[I2C_COM1]) != RESET)
+    {
+        I2C[I2C_COM1]->SR1;
+        I2C[I2C_COM1]->SR2;
+        /*!< Send STOP Condition */
+        //I2C1_STATE = IDLE;
+        I2C_STATE[I2C_COM1] = IDLE;
+        I2C_GenerateSTOP(I2C[I2C_COM1], ENABLE);
 
+        I2C_DMACmd(I2C[I2C_COM1], DISABLE);
+
+        /* Disable the DMA Rx Stream and Clear TC Flag */
+        DMA_Cmd(I2C_DMA_STREAM_TX[I2C_COM1], DISABLE);
+        DMA_ClearFlag(I2C_DMA_STREAM_TX[I2C_COM1], I2C_TX_DMA_FLAG_TCIF[I2C_COM1]);
+
+    }
 }
 
 void I2C1_DMA_RX_IRQHandler(void)
@@ -524,11 +556,11 @@ void I2C_Event_Helper(I2C_COM_TypeDef I2C_COM)
     case SEND_MULTI_REG_ADDR:
         if (I2C_GetITStatus(I2C[I2C_COM], I2C_IT_ADDR | I2C_IT_TXE))
         {
-            I2C[I2C_COM1]->SR1;
+
             I2C[I2C_COM1]->SR2;
             I2C_TRANSMISSION[I2C_COM]->RegisterAddrPtr--;
             I2C_SendData(I2C[I2C_COM], ((uint8_t *) I2C_TRANSMISSION[I2C_COM]->RegisterAddrs)[I2C_TRANSMISSION[I2C_COM]->RegisterAddrPtr]);
-            sync_printf("Sending: %x", ((uint8_t *) I2C_TRANSMISSION[I2C_COM]->RegisterAddrs)[I2C_TRANSMISSION[I2C_COM]->RegisterAddrPtr]);
+            //sync_printf("Sending: %x", ((uint8_t *) I2C_TRANSMISSION[I2C_COM]->RegisterAddrs)[I2C_TRANSMISSION[I2C_COM]->RegisterAddrPtr]);
             if ((I2C_TRANSMISSION[I2C_COM]->RegisterAddrPtr) > 0)
             {
                 newState = SEND_MULTI_REG_ADDR;
@@ -565,7 +597,7 @@ void I2C_Event_Helper(I2C_COM_TypeDef I2C_COM)
         break;
     case SEND_REG_DATA: //TODO: handle multipal transmission by use of DMA.
 
-        if (I2C_GetITStatus(I2C[I2C_COM], I2C_IT_TXE) & I2C_TRANSMISSION[I2C_COM]->TX_DataLength)
+        if (I2C_GetITStatus(I2C[I2C_COM], I2C_IT_TXE) && I2C_TRANSMISSION[I2C_COM]->TX_DataLength)
         {
             //If transferring only 1 byte, dont use DMA.
             if (I2C_TRANSMISSION[I2C_COM]->TX_DataLength == 1)
