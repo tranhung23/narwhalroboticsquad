@@ -9,6 +9,7 @@
 #include "ekf.h"
 #include "matrix_math.h"
 #include "../quad_lib/stm32f4_quad.h"
+#include "../quad_lib/EEPROM.h"
 
 /*acc reference vectors*/
 static float acc_ref_x;
@@ -85,6 +86,11 @@ static float MagFrameM[3][3];
 
 /*state vector*/
 static float state[7];
+
+void ekf_EEPROM_Init(void)
+{
+
+}
 
 void ekf_init(void) {
 	/*set the state vector*/
