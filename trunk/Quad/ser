@@ -1,0 +1,9 @@
+from visual import *
+import string
+import math
+import socket
+import struct
+import serial
+
+ser = serial.Serial(port='com7', baudrate=115200, timeout=1)
+
