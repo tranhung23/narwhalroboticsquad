@@ -15,10 +15,11 @@
 #include "main.h"
 #include "Control/Motor_Control.h"
 
-
 /*Temps*/
 #include "Control/RC_Control.h"
 #include "quad_lib/EEPROM.h"
+#include "quad_lib/config.h"
+#include "quad_lib/flash.h"
 
 #define systick_divider (SystemCoreClock / 1000)
 
@@ -42,168 +43,181 @@ void quad_init(void);
 
 int main(void)
 {
-	char * output;
-	long current_time_ms_gyro = 0;
-	long current_time_ms_acc = 0;
-	long current_time_ms_mag = 0;
-	long current_time_ms_print = 0;
-	unsigned long long current_time_gyro = 0;
+    char * output;
+    long current_time_ms_gyro = 0;
+    long current_time_ms_acc = 0;
+    long current_time_ms_mag = 0;
+    long current_time_ms_print = 0;
+    unsigned long long current_time_gyro = 0;
 
-	/*Initlization method*/
-	quad_init();
+    /*Initlization method*/
+    quad_init();
 
-	float f = 0.324;
+    float f = 0.324;
 
+    /*do nothing*/
+    for (int i = 0; i < 16800000; i++)
+        ;
 
-	/*do nothing*/
-	for (int i = 0; i < 16800000; i++)
-		;
+    double dt = 0.000000008;
 
-	double dt = 0.000000008;
+    //sync_printf("FLOAT: %L ", f);
+    while (1)
+    {
+        //I2C_WriteDevice(I2C_COM2, 0x52, 100, 1);
 
-	//sync_printf("FLOAT: %L ", f);
-	while (1)
-	{
-		//I2C_WriteDevice(I2C_COM2, 0x52, 100, 1);
-
-		//sync_printf("Timer 1: %d", MotorControl_GetControlAngle(CH1));
-		for (int i = 0; i < 1680000; i++)
-				;
-		ADC_print();
-		Sensors_Read(MAG);
+        //sync_printf("Timer 1: %d", MotorControl_GetControlAngle(CH1));
+        for (int i = 0; i < 1680000; i++)
+            ;
+        ADC_print();
+        Sensors_Read(MAG);
 //		Sensors_Read(MAG);
 
-		//Sensors_Read(MAG);
-		//while(1);
-		//output = async_scanf(4);
-		//async_printf("WTF?\r\n");
-		//sync_printf("omg: %s\r\n", output);
+//Sensors_Read(MAG);
+//while(1);
+//output = async_scanf(4);
+//async_printf("WTF?\r\n");
+//sync_printf("omg: %s\r\n", output);
 
-	}
+    }
 
-	while (1)
-	{
+    while (1)
+    {
 
-		if (millis - current_time_ms_print > 20)
-		{
-			//Sensors_Read(-1);
-			//I2C_WriteDevice(I2C_COM2, 0x52, 50, 1);
+        if (millis - current_time_ms_print > 20)
+        {
+            //Sensors_Read(-1);
+            //I2C_WriteDevice(I2C_COM2, 0x52, 50, 1);
 
-			current_time_ms_print = millis;
-			ekf_print();
-		}
+            current_time_ms_print = millis;
+            ekf_print();
+        }
 
-		/*run gyro processing at 1000hz*/
-		if (millis - current_time_ms_gyro > 0)
-		{
+        /*run gyro processing at 1000hz*/
+        if (millis - current_time_ms_gyro > 0)
+        {
 
-			unsigned long long l_dt = (unsigned long long) ((millis / 1000.0 + ((float) ((signed) systick_divider - (signed) SysTick->VAL) / 1000.0 / (float) systick_divider)) * 1000000) - current_time_gyro;
+            unsigned long long l_dt = (unsigned long long) ((millis / 1000.0 + ((float) ((signed) systick_divider - (signed) SysTick->VAL) / 1000.0 / (float) systick_divider)) * 1000000) - current_time_gyro;
 
-			if (l_dt < 1000)
-				continue;
+            if (l_dt < 1000)
+                continue;
 
-			current_time_gyro = (millis / 1000.0 + ((float) ((signed) systick_divider - (signed) SysTick->VAL) / 1000.0 / (float) systick_divider)) * 1000000;
-			current_time_ms_gyro = millis;
+            current_time_gyro = (millis / 1000.0 + ((float) ((signed) systick_divider - (signed) SysTick->VAL) / 1000.0 / (float) systick_divider)) * 1000000;
+            current_time_ms_gyro = millis;
 
-			dt = l_dt / 1000000.0;
+            dt = l_dt / 1000000.0;
 
-			if (Sensors_Process(GYRO, 0.001))
-			{
-				current_time_gyro = (millis / 1000.0 + ((float) ((signed) systick_divider - (signed) SysTick->VAL) / 1000.0 / (float) systick_divider)) * 1000000;
-				current_time_ms_gyro = millis;
-			}
+            if (Sensors_Process(GYRO, 0.001))
+            {
+                current_time_gyro = (millis / 1000.0 + ((float) ((signed) systick_divider - (signed) SysTick->VAL) / 1000.0 / (float) systick_divider)) * 1000000;
+                current_time_ms_gyro = millis;
+            }
 
-		}
+        }
 
-		if (millis - current_time_ms_acc > 1)
-		{
-			if (Sensors_Process(ACC, 0))
-			{
-				current_time_ms_acc = millis;
-			}
+        if (millis - current_time_ms_acc > 1)
+        {
+            if (Sensors_Process(ACC, 0))
+            {
+                current_time_ms_acc = millis;
+            }
 
-		}
-		if (millis - current_time_ms_mag > 9)
-		{
-			if (Sensors_Process(MAG, 0))
-			{
-				current_time_ms_mag = millis;
-			}
-		}
-	}
+        }
+        if (millis - current_time_ms_mag > 9)
+        {
+            if (Sensors_Process(MAG, 0))
+            {
+                current_time_ms_mag = millis;
+            }
+        }
+    }
 }
 
 void IMU_Init(void)
 {
-	//Sensors_Init(GYRO);
-	//Sensors_Init(ACC);
+    //Sensors_Init(GYRO);
+    //Sensors_Init(ACC);
 
-	/*Start the magnometer*/
-	Sensors_Init(MAG);
-	ekf_init();
-	ADC12_Init();
+    /*Start the magnometer*/
+    Sensors_Init(MAG);
+    ekf_init();
+    ADC12_Init();
 }
 
 void quad_init(void)
 {
 
-	/*Enable sysconfig*/
-	RCC_APB2PeriphClockCmd(RCC_APB2Periph_SYSCFG, ENABLE);
+    /*Enable sysconfig*/
+    RCC_APB2PeriphClockCmd(RCC_APB2Periph_SYSCFG, ENABLE);
 
-	/*Turn on LED's*/
-	GPIOInit(LED3);
-	GPIOInit(LED4);
-	GPIOInit(LED5);
-	GPIOInit(LED6);
+    /*Turn on LED's*/
+    GPIOInit(LED3);
+    GPIOInit(LED4);
+    GPIOInit(LED5);
+    GPIOInit(LED6);
 
-	/*Light up LED6 to signal turn on */
-	GPIOOn(LED6);
+    /*Light up LED6 to signal turn on */
+    GPIOOn(LED6);
 
-	/*turn off auto zero funtions*/
-	GPIOInit(GXY_AZ);
-	GPIOInit(GZ_AZ);
-	GPIOOff(GXY_AZ);
-	GPIOOff(GZ_AZ);
+    /*turn off auto zero funtions*/
+    GPIOInit(GXY_AZ);
+    GPIOInit(GZ_AZ);
+    GPIOOff(GXY_AZ);
+    GPIOOff(GZ_AZ);
 
-	/* enable EEPROM GPIO */
-	GPIOInit(EEPROM);
+    /* enable EEPROM GPIO */
+    //GPIOInit(EEPROM);
 
-	/*If systick can be set, light up LED 3..*/
-	if (SysTick_Config(systick_divider))
-	{
-		GPIOOn(LED3);
-	}
+    /*If systick can be set, light up LED 3..*/
+    if (SysTick_Config(systick_divider))
+    {
+        GPIOOn(LED3);
+    }
 
-	/*USART*/
-	COMInit(USART_COM1);
+    /*USART*/
+    COMInit(USART_COM1);
 
-	/*init i2c modules*/
-	I2C_LowLevel_Init(I2C_COM1);
-	I2C_LowLevel_Init(I2C_COM2);
+    /*Debug code section*/
 
-	/*Init the External config, just the button*/
-	EXTILine0_Config();
+       configFlashWrite();
+       for (int i = 0; i < 1680000; i++)
+           ;
+       configFlashRead();
 
-	/*Init the IMU sensors*/
-	IMU_Init();
+       for (int i = 0; i < CONFIG_NUM_PARAMS; i++)
+       {
+           sync_printf("PARAMETER %d: %f\r\n", i, p[i]);
+       }
 
-	/*Initilize the motor controls*/
-	MotorControl_Init();
+       /*End debug code section*/
 
-	/*Init input caputre channels*/
-	TIM_PWM_Ctrl_In_Init(CH1);
-	TIM_PWM_Ctrl_In_Init(CH2);
-	TIM_PWM_Ctrl_In_Init(CH3);
-	TIM_PWM_Ctrl_In_Init(CH4);
 
-	//TIM_Init();
+    /*init i2c modules*/
+    I2C_LowLevel_Init(I2C_COM1);
+    I2C_LowLevel_Init(I2C_COM2);
 
-	EEPROM_init();
+    /*Init the External config, just the button*/
+    EXTILine0_Config();
+
+    /*Init the IMU sensors*/
+    IMU_Init();
+
+    /*Initilize the motor controls*/
+    MotorControl_Init();
+
+    /*Init input caputre channels*/
+    TIM_PWM_Ctrl_In_Init(CH1);
+    TIM_PWM_Ctrl_In_Init(CH2);
+    TIM_PWM_Ctrl_In_Init(CH3);
+    TIM_PWM_Ctrl_In_Init(CH4);
+
+    //TIM_Init();
+
+    //EEPROM_init();
+
 }
-
-
 
 void inc_millis(void)
 {
-	millis++;
+    millis++;
 }
