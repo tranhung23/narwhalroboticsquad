@@ -46,12 +46,12 @@ void MotorControl_SetAngle(int rawValue, PWM_CTRL_IN_TypeDef CH)
 	//RC_Control[CH] = rawValue;
 
 	//(x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min
-	if(rawValue > RC_Control_Max)
-		rawValue = RC_Control_Max;
-	if(rawValue < RC_Control_Min)
-		rawValue = RC_Control_Min;
+	if(rawValue > p[RC_CONTROL_MAX])
+		rawValue = p[RC_CONTROL_MAX];
+	if(rawValue < p[RC_CONTROL_MIN])
+		rawValue = p[RC_CONTROL_MIN];
 
-	Quad_Ctrl_Angle[CH] = (rawValue - RC_Control_Min) * (Quad_Ctrl_Limit_H[CH]- Quad_Ctrl_Limit_L[CH]) /(RC_Control_Max - RC_Control_Min) - Quad_Ctrl_Limit_L[CH];
+	Quad_Ctrl_Angle[CH] = (rawValue - p[RC_CONTROL_MIN]) * (Quad_Ctrl_Limit_H[CH]- Quad_Ctrl_Limit_L[CH]) /(p[RC_CONTROL_MAX] - p[RC_CONTROL_MIN]) - Quad_Ctrl_Limit_L[CH];
 
 	//async_printf("Value: %d\r\n", Quad_Ctrl_Angle[CH]);
 }

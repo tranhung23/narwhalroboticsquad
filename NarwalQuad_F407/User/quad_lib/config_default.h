@@ -47,4 +47,38 @@
 #define DEFAULT_IMU_GYO_BIAS_Y      14.2851
 #define DEFAULT_IMU_GYO_BIAS_Z      5.2421
 
+#define DEFAULT_MOTOR_PITCH_LEFT_ADDR       0x52
+#define DEFAULT_MOTOR_PITCH_RIGHT_ADDR      0x54
+#define DEFAULT_MOTOR_ROLL_BACK_ADDR        0x56
+#define DEFAULT_MOTOR_ROLL_FORWARD_ADDR     0x58
+#define DEFAULT_MOTOR_CTRL_MIN              0
+#define DEFAULT_MOTOR_CTRL_MAX              255
+
+#define DEFAULT_PID_N               3
+#define DEFAULT_PID_YAW_EPSILON     0.01
+#define DEFAULT_PID_YAW_DT          0.01
+#define DEFAULT_PID_YAW_MAX         4.0
+#define DEFAULT_PID_YAW_MIN         -4.0
+#define DEFAULT_PID_YAW_KP          0.1
+#define DEFAULT_PID_YAW_KI          0.01
+#define DEFAULT_PID_YAW_KD          0.005
+#define DEFAULT_PID_PITCH_EPSILON   0.01
+#define DEFAULT_PID_PITCH_DT        0.01
+#define DEFAULT_PID_PITCH_MAX       4.0
+#define DEFAULT_PID_PITCH_MIN       -4.0
+#define DEFAULT_PID_PITCH_KP        0.1
+#define DEFAULT_PID_PITCH_KI        0.01
+#define DEFAULT_PID_PITCH_KD        0.005
+#define DEFAULT_PID_ROLL_EPSILON    0.01
+#define DEFAULT_PID_ROLL_DT         0.01
+#define DEFAULT_PID_ROLL_MAX        4.0
+#define DEFAULT_PID_ROLL_MIN        -4.0
+#define DEFAULT_PID_ROLL_KP         0.1
+#define DEFAULT_PID_ROLL_KI         0.01
+#define DEFAULT_PID_ROLL_KD         0.005
+
+#define DEFAULT_RC_CONTROL_N         4
+/*Define the mins and max of the control stick*/
+#define DEFAULT_RC_CONTROL_MIN       1000
+#define DEFAULT_RC_CONTROL_MAX       2000
 #endif /* CONFIG_DEFAULT_H_ */
