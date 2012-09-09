@@ -98,65 +98,65 @@ void ekf_init(void) {
 	state_q1 = state_q2 = state_q3 = state_gb0 = state_gb1 = state_gb2 = 0.00;
 
 	/*set gyro bias*/
-	gyro_bias_x = GYRO_BX;
-	gyro_bias_y = GYRO_BY;
-	gyro_bias_z = GYRO_BZ;
+	gyro_bias_x = p[IMU_GYO_BIAS_X];
+	gyro_bias_y = p[IMU_GYO_BIAS_Y];
+	gyro_bias_z = p[IMU_GYO_BIAS_Z];
 
 	/*set magnetomer bias*/
-	mag_bias_x = MAG_BX;
-	mag_bias_y = MAG_BY;
-	mag_bias_z = MAG_BZ;
+	mag_bias_x = p[IMU_MAG_BIAS_X];
+	mag_bias_y = p[IMU_MAG_BIAS_Y];
+	mag_bias_z = p[IMU_MAG_BIAS_Z];
 
 	/*set mag cali matrix*/
-	mag_cali_xx = MAG_CXX;
-	mag_cali_xy = MAG_CXY;
-	mag_cali_xz = MAG_CXZ;
+	mag_cali_xx = p[IMU_MAG_CALI_XX];
+	mag_cali_xy = p[IMU_MAG_CALI_XY];
+	mag_cali_xz = p[IMU_MAG_CALI_XZ];
 
-	mag_cali_yx = MAG_CYX;
-	mag_cali_yy = MAG_CYY;
-	mag_cali_yz = MAG_CYZ;
+	mag_cali_yx = p[IMU_MAG_CALI_YZ];
+	mag_cali_yy = p[IMU_MAG_CALI_YY];
+	mag_cali_yz = p[IMU_MAG_CALI_YZ];
 
-	mag_cali_zx = MAG_CZX;
-	mag_cali_zy = MAG_CZY;
-	mag_cali_zz = MAG_CZZ;
-
-	/*set Acc Ref vectors, default vector when device is sitting still on level platform*/
-	acc_ref[0] = acc_ref_x = ACC_RX;
-	acc_ref[1] = acc_ref_y = ACC_RY;
-	acc_ref[2] = acc_ref_z = ACC_RZ;
+	mag_cali_zx = p[IMU_MAG_CALI_ZX];
+	mag_cali_zy = p[IMU_MAG_CALI_ZY];
+	mag_cali_zz = p[IMU_MAG_CALI_ZZ];
 
 	/*set Acc Ref vectors, default vector when device is sitting still on level platform*/
-	mag_ref[0] = mag_ref_x = MAG_RX;
-	mag_ref[1] = mag_ref_y = MAG_RY;
-	mag_ref[2] = mag_ref_z = MAG_RZ;
+	acc_ref[0] = acc_ref_x = p[IMU_ACC_REF_X];
+	acc_ref[1] = acc_ref_y = p[IMU_ACC_REF_Y];
+	acc_ref[2] = acc_ref_z = p[IMU_ACC_REF_Z];
+
+	/*set Acc Ref vectors, default vector when device is sitting still on level platform*/
+	mag_ref[0] = mag_ref_x = p[IMU_MAG_REF_X];
+	mag_ref[1] = mag_ref_y = p[IMU_MAG_REF_Y];
+	mag_ref[2] = mag_ref_z = p[IMU_MAG_REF_Z];
 
 	/*init predicted estimate covariance*/
 	Minit((float*) P, 7, 7);
-	P[4][4] = P_COV;
-	P[5][5] = P_COV;
-	P[6][6] = P_COV;
+	P[4][4] = p[IMU_P_COV];
+	P[5][5] = p[IMU_P_COV];
+	P[6][6] = p[IMU_P_COV];
 
 	/*init Innovation (or residual) covariance*/
 	Minit((float*) Q, 7, 7);
-	Q[0][0] = Q_COV;
-	Q[1][1] = Q_COV;
-	Q[2][2] = Q_COV;
-	Q[3][3] = Q_COV;
-	Q[4][4] = Q_COV;
-	Q[5][5] = Q_COV;
-	Q[6][6] = Q_COV;
+	Q[0][0] = p[IMU_Q_COV];
+	Q[1][1] = p[IMU_Q_COV];
+	Q[2][2] = p[IMU_Q_COV];
+	Q[3][3] = p[IMU_Q_COV];
+	Q[4][4] = p[IMU_Q_COV];
+	Q[5][5] = p[IMU_Q_COV];
+	Q[6][6] = p[IMU_Q_COV];
 
 	/*init Acc covariance matrix*/
 	Minit((float*) Racc, 3, 3);
-	Racc[0][0] = ACC_COV;
-	Racc[1][1] = ACC_COV;
-	Racc[2][2] = ACC_COV;
+	Racc[0][0] = p[IMU_ACC_COV];
+	Racc[1][1] = p[IMU_ACC_COV];
+	Racc[2][2] = p[IMU_ACC_COV];
 
 	/*init mag covariance matrix*/
 	Minit((float*) Rmag, 3, 3);
-	Rmag[0][0] = MAG_COV;
-	Rmag[1][1] = MAG_COV;
-	Rmag[2][2] = MAG_COV;
+	Rmag[0][0] = p[IMU_MAG_COV];
+	Rmag[1][1] = p[IMU_MAG_COV];
+	Rmag[2][2] = p[IMU_MAG_COV];
 
 	/*jacobian matrix of F*/
 	Minit((float*) Fj, 7, 7);
@@ -219,9 +219,9 @@ void process_gyro(float gx, float gy, float gz, float dT) {
 	 step to get degrees, and then multiply by rad
 	 Gyro = ([w(4); w(5); w(6)] - gyrocali500) * 17.50/1000 * deg2rad;
 	 */
-	gx = ((gx - gyro_bias_x + state_gb0) * GYRO_DEGLSB) * DEG2RAD;
-	gy = ((gy - gyro_bias_y + state_gb1) * GYRO_DEGLSB) * DEG2RAD;
-	gz = ((gz - gyro_bias_z + state_gb2) * GYRO_DEGLSB) * DEG2RAD;
+	gx = ((gx - gyro_bias_x + state_gb0) * p[IMU_GYO_DEGLSB]) * p[DEG2RAD];
+	gy = ((gy - gyro_bias_y + state_gb1) * p[IMU_GYO_DEGLSB]) * p[DEG2RAD];
+	gz = ((gz - gyro_bias_z + state_gb2) * p[IMU_GYO_DEGLSB]) * p[DEG2RAD];
 	/*add gyro rotation into quaternion*/
 	state_q0 = state_q0
 			+ ((.5) * (-gx * state_q1 - gy * state_q2 - gz * state_q3) * dT);
