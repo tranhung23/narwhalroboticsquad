@@ -4,23 +4,16 @@
  *  Created on: May 3, 2012
  *      Author: GrubyGrub
  */
-
+#include "../quad_lib/config.h"
 #ifndef MOTOR_CONTROL_H_
 #define MOTOR_CONTROL_H_
 
-#define PITCH_LEFT_ADDR 0x52
-#define PITCH_RIGHT_ADDR 0x54
-#define ROLL_BACK_ADDR 0x56
-#define ROLL_FORWARD_ADDR 0x58
-
+/*number of motor conttrollers*/
 #define CTRL_MOTORn 4
 #define CTRL_LINEn 4
 
 
-#define MOTOR_CTRL_MIN 0
-#define MOTOR_CTRL_MAX 255
-
-/*Pitch angle, Roll angle, Yaw Angle, throttle*/
+/*Pitch angle, Roll angle, Yaw Angle, throttle, keep*/
 static int Quad_Ctrl_Angle[CTRL_MOTORn] = {0, 0, 0, 0};
 
 /*Cap pitch and roll at 45 degrees for now, throttle at 200, pitch, roll, yaw, throttle*/
