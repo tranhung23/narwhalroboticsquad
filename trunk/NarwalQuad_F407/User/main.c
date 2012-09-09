@@ -59,9 +59,9 @@ int main(void)
 	for (int i = 0; i < 16800000; i++)
 		;
 
-	float dt = 0;
+	double dt = 0.000000008;
 
-	sync_printf(" %f ", f);
+	//sync_printf("FLOAT: %L ", f);
 	while (1)
 	{
 		//I2C_WriteDevice(I2C_COM2, 0x52, 100, 1);
@@ -69,7 +69,7 @@ int main(void)
 		//sync_printf("Timer 1: %d", MotorControl_GetControlAngle(CH1));
 		for (int i = 0; i < 1680000; i++)
 				;
-		//ADC_print();
+		ADC_print();
 		Sensors_Read(MAG);
 //		Sensors_Read(MAG);
 
