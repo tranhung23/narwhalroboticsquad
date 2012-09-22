@@ -3,12 +3,8 @@ import string
 import math
 import socket
 import struct
-#import serial
 
-#ser = serial.Serial(port='com7', baudrate=115200, timeout=1)
-
-#dot = box(length=0.8, height=0.2, width=0.6, color=color.yellow)
-dot = box(length=0.4, height=0.2, width=1.5, color=color.yellow)
+dot = box(length=0.8, height=0.2, width=0.6, color=color.yellow)
 
 xarrow = arrow(pos=(0,0,0), axis=(1,0,0), color=color.red)
 yarrow = arrow(pos=(0,0,0), axis=(0,1,0), color=color.green)
