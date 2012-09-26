@@ -55,6 +55,7 @@ static void INS_Sensor_ValueCalibrate(U64 ticks)
 	/*Current values are now in volts*/
 
 	float ax, ay, az, gx, gy, gz, tempst;
+	uint32_t currAvgIdx = ticks % AVERAGE_SAMPLES;
 
 	ax = (double) FilteringADCData.adcSum[ACCX] * ADC_DIVISOR;
 	ay = (double) FilteringADCData.adcSum[ACCY] * ADC_DIVISOR;
@@ -75,6 +76,9 @@ static void INS_Sensor_ValueCalibrate(U64 ticks)
 	OrientationValues.gyroy = gy + p[IMU_GYO_BIAS_Y];
 	OrientationValues.gyroz = gz + p[IMU_GYO_BIAS_Z];
 	OrientationValues.temperatureST = (tempst - ADC_TEMP_REF)/ADC_MVC + ADC_TEMP_SHIFT;
+
+
+
 
 #ifdef DEBUG
 	async_printf("%f %f %f %f %f %f %f\r\n", OrientationValues.accx, OrientationValues.accy, OrientationValues.accz, OrientationValues.gyrox, OrientationValues.gyroy, OrientationValues.gyroz, OrientationValues.temperatureST);
