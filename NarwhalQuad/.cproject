@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<?fileVersion 4.0.0?>
+
+<cproject storage_type_id="org.eclipse.cdt.core.XmlProjectDescriptionStorage">
+	<storageModule moduleId="org.eclipse.cdt.core.settings">
+		<cconfiguration id="org.eclipse.cdt.core.default.config.1758903934">
+			<storageModule buildSystemId="org.eclipse.cdt.core.defaultConfigDataProvider" id="org.eclipse.cdt.core.default.config.1758903934" moduleId="org.eclipse.cdt.core.settings" name="Configuration">
+				<externalSettings/>
+				<extensions>
+					<extension id="org.eclipse.cdt.core.ELF" point="org.eclipse.cdt.core.BinaryParser"/>
+				</extensions>
+			</storageModule>
+			<storageModule moduleId="org.eclipse.cdt.core.externalSettings">
+				<externalSettings containerId="org.coocox.ExternalSettings" factoryId="org.eclipse.cdt.core.extension.container.factory">
+					<externalSetting>
+						<entry flags="" kind="includePath" name="F:\Applications\GCC\arm-none-eabi\include"/>
+						<entry flags="" kind="includePath" name="F:\Applications\GCC\lib\gcc\arm-none-eabi\4.6.2\include"/>
+						<entry flags="" kind="includePath" name="F:\Applications\GCC\lib\gcc\arm-none-eabi\4.6.2\include-fixed"/>
+						<entry flags="" kind="includePath" name="."/>
+						<entry flags="" kind="includePath" name="cmsis"/>
+						<entry flags="" kind="includePath" name="cmsis_boot"/>
+						<entry flags="" kind="includePath" name="cmsis_lib"/>
+						<entry flags="" kind="includePath" name="cmsis_lib/include"/>
+						<entry flags="" kind="includePath" name="OS"/>
+						<entry flags="" kind="includePath" name="OS/Addon"/>
+						<entry flags="" kind="includePath" name="OS/kernel"/>
+						<entry flags="" kind="includePath" name="OS/portable"/>
+						<entry flags="" kind="includePath" name="User_Lib"/>
+						<entry flags="" kind="includePath" name="User_Lib/Control"/>
+						<entry flags="" kind="includePath" name="User_Lib/drivers"/>
+						<entry flags="" kind="includePath" name="User_Lib/nubs"/>
+						<entry flags="" kind="includePath" name="User_Lib/sensors"/>
+						<entry flags="" kind="macro" name="__GNUC__" value=""/>
+						<entry flags="" kind="macro" name="USE_STDPERIPH_DRIVER" value=""/>
+						<entry flags="" kind="macro" name="ARM_MATH_CM4" value=""/>
+						<entry flags="" kind="macro" name="NESTED_INTERRUPTS" value=""/>
+						<entry flags="" kind="macro" name="CTL_TASKING" value=""/>
+						<entry flags="" kind="macro" name="__FPU_PRESENT" value=""/>
+						<entry flags="" kind="macro" name="__FPU_USED" value=""/>
+						<entry flags="" kind="macro" name="STM32F407VG" value=""/>
+					</externalSetting>
+				</externalSettings>
+			</storageModule>
+			<storageModule moduleId="org.eclipse.cdt.core.language.mapping"/>
+			<storageModule moduleId="org.eclipse.cdt.internal.ui.text.commentOwnerProjectMappings"/>
+			<storageModule moduleId="org.eclipse.cdt.core.pathentry">
+				<pathentry kind="src" path=""/>
+				<pathentry include="F:/Applications/GCC/arm-none-eabi/include" kind="inc" path="" system="true"/>
+				<pathentry include="F:/Applications/GCC/lib/gcc/arm-none-eabi/4.6.2/include" kind="inc" path="" system="true"/>
+				<pathentry include="F:/Applications/GCC/lib/gcc/arm-none-eabi/4.6.2/include-fixed" kind="inc" path="" system="true"/>
+				<pathentry include="F:/_DEV/narwahquadrotor/NarwhalQuad" kind="inc" path="" system="true"/>
+				<pathentry include="F:/_DEV/narwahquadrotor/NarwhalQuad/cmsis" kind="inc" path="" system="true"/>
+				<pathentry include="F:/_DEV/narwahquadrotor/NarwhalQuad/cmsis_boot" kind="inc" path="" system="true"/>
+				<pathentry include="F:/_DEV/narwahquadrotor/NarwhalQuad/cmsis_lib" kind="inc" path="" system="true"/>
+				<pathentry include="F:/_DEV/narwahquadrotor/NarwhalQuad/cmsis_lib/include" kind="inc" path="" system="true"/>
+				<pathentry include="F:/_DEV/narwahquadrotor/NarwhalQuad/OS" kind="inc" path="" system="true"/>
+				<pathentry include="F:/_DEV/narwahquadrotor/NarwhalQuad/OS/Addon" kind="inc" path="" system="true"/>
+				<pathentry include="F:/_DEV/narwahquadrotor/NarwhalQuad/OS/kernel" kind="inc" path="" system="true"/>
+				<pathentry include="F:/_DEV/narwahquadrotor/NarwhalQuad/OS/portable" kind="inc" path="" system="true"/>
+				<pathentry include="F:/_DEV/narwahquadrotor/NarwhalQuad/User_Lib" kind="inc" path="" system="true"/>
+				<pathentry include="F:/_DEV/narwahquadrotor/NarwhalQuad/User_Lib/Control" kind="inc" path="" system="true"/>
+				<pathentry include="F:/_DEV/narwahquadrotor/NarwhalQuad/User_Lib/drivers" kind="inc" path="" system="true"/>
+				<pathentry include="F:/_DEV/narwahquadrotor/NarwhalQuad/User_Lib/nubs" kind="inc" path="" system="true"/>
+				<pathentry include="F:/_DEV/narwahquadrotor/NarwhalQuad/User_Lib/sensors" kind="inc" path="" system="true"/>
+				<pathentry kind="mac" name="__GNUC__" path="" value=""/>
+				<pathentry kind="mac" name="USE_STDPERIPH_DRIVER" path="" value=""/>
+				<pathentry kind="mac" name="ARM_MATH_CM4" path="" value=""/>
+				<pathentry kind="mac" name="NESTED_INTERRUPTS" path="" value=""/>
+				<pathentry kind="mac" name="CTL_TASKING" path="" value=""/>
+				<pathentry kind="mac" name="__FPU_PRESENT" path="" value=""/>
+				<pathentry kind="mac" name="__FPU_USED" path="" value=""/>
+				<pathentry kind="mac" name="STM32F407VG" path="" value=""/>
+				<pathentry kind="out" path=""/>
+			</storageModule>
+		</cconfiguration>
+	</storageModule>
+</cproject>

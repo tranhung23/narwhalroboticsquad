@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<project default="postbuild" name="test">
+  <property name="project.name" value="NarwhalQuad"/>
+  <property name="project.debug" value="Debug"/>
+  <property name="project.obj" value="Debug/obj"/>
+  <property name="project.bin" value="Debug/bin"/>
+
+  <!-- associate current path to the link file path-->
+  <dirname file="$${basedir}" property="linkdir"/>
+
+  <target depends="compile" name="postbuild">
+    <exec executable="${gcc.home}\arm-none-eabi-objcopy.exe">
+      <arg value="-O"/>
+      <arg value="binary"/>
+      <arg value="${project.bin}\${project.name}.elf"/>
+      <arg value="${project.bin}\${project.name}.bin"/>
+    </exec>
+    <exec executable="${gcc.home}\arm-none-eabi-objcopy.exe">
+      <arg value="-O"/>
+      <arg value="ihex"/>
+      <arg value="${project.bin}\${project.name}.elf"/>
+      <arg value="${project.bin}\${project.name}.hex"/>
+    </exec>
+    <exec dir="${basedir}\${project.bin}" executable="${gcc.home}\arm-none-eabi-size.exe">
+      <arg value="${project.name}.elf"/>
+    </exec>
+  </target>
+  
+  <taskdef resource="cpptasks.tasks"/>
+  <target name="compile">
+    <mkdir dir="${project.bin}"/>
+    <mkdir dir="${project.obj}"/>
+    <cc debug="true" objdir="${project.obj}" outfile="${project.bin}/${project.name}.elf" outtype="executable" subsystem="console">
+      <!-- compile all the c source file in the project -->
+      
+      <fileset dir=".">
+        <include name="**/*.c"/>
+        <include name="**/*.cpp"/>
+        <include name="**/*.s"/>
+      </fileset>
+      <project outfile="${project.name}.elf" overwrite="true" type="xcode"/>
+      
+      <!-- defines -->
+      <defineset>
+        <define name="USE_STDPERIPH_DRIVER"/>
+        <define name="ARM_MATH_CM4"/>
+        <define name="NESTED_INTERRUPTS"/>
+        <define name="CTL_TASKING"/>
+        <define name="__FPU_PRESENT"/>
+        <define name="__FPU_USED"/>
+        <define name="STM32F407VG"/>
+      </defineset>
+      
+      <!-- include compile path -->
+      <includepath path="."/>
+      <includepath path="cmsis_boot"/>
+      <includepath path="cmsis"/>
+      <includepath path="cmsis_lib"/>
+      <includepath path="cmsis_lib/include"/>
+      <includepath path="OS"/>
+      <includepath path="OS/portable"/>
+      <includepath path="OS/kernel"/>
+      <includepath path="User_Lib"/>
+      <includepath path="User_Lib/drivers"/>
+      <includepath path="User_Lib/nubs"/>
+      <includepath path="User_Lib/sensors"/>
+      <includepath path="OS/Addon"/>
+      <includepath path="User_Lib/Control"/>
+      
+      <!-- arm-none-eabi-gcc compiler arguments -->
+      <compilerarg value="-mcpu=cortex-m4"/>
+	    
+      <compilerarg value="-ffunction-sections"/>
+      <compilerarg value="-O0"/>
+      
+      <compilerarg value="-fno-gcse"/>
+      
+      <compilerarg value="-g"/>
+      
+      <compilerarg value="-Wall"/>
+      <compilerarg value="-mthumb"/>
+      <compilerarg value="-fsingle-precision-constant"/>
+      <compilerarg value="-mfpu=fpv4-sp-d16"/>
+      
+      <compilerarg value="-mfloat-abi=softfp"/>
+      <compilerarg value="-std=c99"/>
+      
+      <!-- arm-none-eabi-gcc linker arguments -->
+      <linkerarg value="-O0"/>
+      <linkerarg value="-nostartfiles"/>
+      <linkerarg value="-Map=${project.name}.map"/>
+      <linkerarg value="-mcpu=cortex-m4"/>
+      <linkerarg value="-mthumb"/>
+      <linkerarg value="-L${linkdir}"/>
+      
+      <linkerarg value="-TF:\_DEV\narwahquadrotor\NarwhalQuad\arm-gcc-link.ld"/>
+      <linkerarg value="--gc-sections"/>
+      <linkerarg value="-lgcc"/>
+      <linkerarg value="-lc"/>
+      <linkerarg value="-lm"/>
+    <!-- linked libraries -->
+    <libset dir="" libs="m"/>
+    <linkerarg value="-lnosys"/>
+    </cc>
+  </target>
+
+  <target name="clean">
+    <delete dir="${project.bin}"/>
+    <delete dir="${project.obj}"/>
+    <delete dir="${project.debug}"/>
+    <delete dir="${project.name}.elf.xcodeproj"/>
+  </target>
+  
+  <target depends="clean" name="rebuild">
+    <antcall target="postbuild"/>
+  </target>
+
+</project>
