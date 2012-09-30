@@ -93,7 +93,7 @@
       <linkerarg value="-mthumb"/>
       <linkerarg value="-L${linkdir}"/>
       
-      <linkerarg value="-TC:\_dev\narwhalroboticsquad\NarwhalQuad\link.ld"/>
+      <linkerarg value="-TF:\_DEV\narwhalroboticsquad\NarwhalQuad\arm-gcc-link.ld"/>
       <linkerarg value="--gc-sections"/>
       <linkerarg value="-lgcc"/>
       <linkerarg value="-lc"/>

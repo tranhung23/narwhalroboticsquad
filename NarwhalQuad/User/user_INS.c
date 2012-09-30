@@ -19,6 +19,8 @@ void INS_Init_Task(void)
 	U64 ticks = 0;
 	sync_printf("Init INS starting \r\n");
 
+	printf("HIHIHI");
+	CoTickDelay(100);
 	//TODO: Init task
 
 	while (1)
@@ -37,6 +39,7 @@ void INS_Init_Task(void)
 		INS_Sensor_ValueCalibrate(ticks);
 
 		/*PID Loop update process*/
+		ticks++;
 	}
 }
 
@@ -74,9 +77,9 @@ static void INS_Sensor_ValueCalibrate(U64 ticks)
 		OrientationValues.magz[currAvgIdx] = mz;
 
 		/*get the average of the current sample*/
-		OrientationValues.avg_magx = OrientationValues.avg_magx_sum / AVERAGE_SAMPLES;
-		OrientationValues.avg_magy = OrientationValues.avg_magy_sum / AVERAGE_SAMPLES;
-		OrientationValues.avg_magz = OrientationValues.avg_magz_sum / AVERAGE_SAMPLES;
+		OrientationValues.avg_magx = OrientationValues.avg_magx_sum / (double)AVERAGE_SAMPLES;
+		OrientationValues.avg_magy = OrientationValues.avg_magy_sum / (double)AVERAGE_SAMPLES;
+		OrientationValues.avg_magz = OrientationValues.avg_magz_sum / (double)AVERAGE_SAMPLES;
 
 #ifdef DEBUG
 		//async_printf("mag x: %f, y: %f, z: %f, %lld\r\n", x, y, z, CoGetOSTime());
@@ -96,6 +99,9 @@ static void INS_Sensor_ValueCalibrate(U64 ticks)
 	ax = ax + p[IMU_ACC_BIAS_X];
 	ay = ay + p[IMU_ACC_BIAS_Y];
 	az = az + p[IMU_ACC_BIAS_Z];
+	OrientationValues.gyrox = gx + p[IMU_GYO_BIAS_X];
+	OrientationValues.gyroy = gy + p[IMU_GYO_BIAS_Y];
+	OrientationValues.gyroz = gz + p[IMU_GYO_BIAS_Z];
 	tempst = (tempst - ADC_TEMP_REF) / ADC_MVC + ADC_TEMP_SHIFT;
 
 	/*subtract current average index from average values*/
@@ -122,7 +128,7 @@ static void INS_Sensor_ValueCalibrate(U64 ticks)
 	OrientationValues.avg_temperatureST = OrientationValues.avg_temperatureST_sum / AVERAGE_SAMPLES;
 
 #ifdef DEBUG
-	async_printf("%f %f %f %f %f %f %f\r\n", OrientationValues.accx, OrientationValues.accy, OrientationValues.accz, OrientationValues.gyrox, OrientationValues.gyroy, OrientationValues.gyroz, OrientationValues.temperatureST);
+	async_printf("%f %f %f %f %f %f %f\r\n", OrientationValues.avg_accx, OrientationValues.avg_accy, OrientationValues.avg_accz, OrientationValues.gyrox, OrientationValues.gyroy, OrientationValues.gyroz, OrientationValues.avg_temperatureST);
 	//async_printf("Acc x: %f, y: %f, z: %f, GYRO x: %f, y: %f, z: %f\r\n", OrientationValues.accx, OrientationValues.accy, OrientationValues.accz,OrientationValues.gyrox,OrientationValues.gyroy,OrientationValues.gyroz);
 #endif
 }
