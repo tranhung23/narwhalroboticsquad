@@ -18,9 +18,9 @@ extern OS_STK *narwhalINSStack;
 
 typedef struct INS_Orientation
 {
-	float gyrox;
-	float gyroy;
-	float gyroz;
+	float gyrox[AVERAGE_SAMPLES];
+	float gyroy[AVERAGE_SAMPLES];
+	float gyroz[AVERAGE_SAMPLES];
 	float accx[AVERAGE_SAMPLES];
 	float accy[AVERAGE_SAMPLES];
 	float accz[AVERAGE_SAMPLES];
@@ -55,5 +55,6 @@ typedef struct INS_Orientation
 
 extern INS_Orientation OrientationValues;
 static void INS_Sensor_ValueCalibrate(U64 ticks);
+static void INS_Sensor_Static(void);
 
 void INS_Init_Task(void);

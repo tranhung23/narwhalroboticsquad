@@ -66,6 +66,7 @@
       <includepath path="User_Lib/sensors"/>
       <includepath path="OS/Addon"/>
       <includepath path="User_Lib/Control"/>
+      <includepath path="DSP_Lib"/>
       
       <!-- arm-none-eabi-gcc compiler arguments -->
       <compilerarg value="-mcpu=cortex-m4"/>
@@ -93,14 +94,13 @@
       <linkerarg value="-mthumb"/>
       <linkerarg value="-L${linkdir}"/>
       
-      <linkerarg value="-TF:\_DEV\narwhalroboticsquad\NarwhalQuad\arm-gcc-link.ld"/>
+      <linkerarg value="-TF:\_DEV\narwahquadrotor\NarwhalQuad\arm-gcc-link.ld"/>
       <linkerarg value="--gc-sections"/>
       <linkerarg value="-lgcc"/>
       <linkerarg value="-lc"/>
       <linkerarg value="-lm"/>
     <!-- linked libraries -->
     <libset dir="" libs="m"/>
-    <linkerarg value="-lnosys"/>
     </cc>
   </target>
 

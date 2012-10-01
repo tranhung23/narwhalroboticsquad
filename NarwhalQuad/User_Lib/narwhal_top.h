@@ -27,6 +27,8 @@
 #include "stm32f4xx_tim.h"
 #include "misc.h"
 
+
+#include <arm_math.h>
 #include <narwhal_USART.h>
 #include <narwhal_utils.h>
 

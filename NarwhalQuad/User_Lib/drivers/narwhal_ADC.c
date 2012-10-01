@@ -28,6 +28,9 @@ OS_FlagID ADC_FLAG;
 void ADC_SENSOR_Init(void)
 {
 
+	memset(&RawADCData, 0x0, sizeof(RawADCData));
+	memset(&FilteringADCData, 0x0, sizeof(FilteringADCData));
+
 	ADC_CommonInitTypeDef ADC_CommonInitStructure;
 
 	/* Enable peripheral clocks *************************************************/

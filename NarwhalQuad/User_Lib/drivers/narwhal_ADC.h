@@ -70,7 +70,7 @@ typedef struct RawADCStruct{
 } RawADCStruct;
 
 typedef struct FilteredADCStruct{
-	uint32_t adcSum[ADC_SENSOR_NUM]; /*the sum to use is placed here, use this number externally*/
+	uint32_t adcSum[ADC_SENSOR_NUM]; /*the sum to use is placed here*/
 	uint32_t adcIRQSum[ADC_SENSOR_NUM]; /*running totoal during IRQ*/
 	__IO int adcIRQIterations; /*number of IRQ iterations*/
 }FilteredADCStruct;
