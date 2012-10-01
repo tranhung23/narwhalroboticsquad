@@ -8,6 +8,8 @@
 #ifndef NARWHAL_CONFIG_H
 #define NARWHAL_CONFIG_H
 
+#define USART_ECHO 1
+
 /*--------------------------------------------------------------------------------------
  *
  * USART Defines

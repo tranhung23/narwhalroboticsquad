@@ -47,7 +47,7 @@ void Drivers_Init_Task(void) {
 #endif
 	/*USART*/
 	COMInit(USART_COM1);
-	configFlashWrite();
+	//configFlashWrite();
 	configFlashRead();
 #ifdef PRINTFLASH
 	for (int i = 0; i < CONFIG_NUM_PARAMS; i++)
@@ -79,5 +79,8 @@ void Drivers_Init_Task(void) {
 	//TIM_Init();
 
 	//EEPROM_init();
+
+	setvbuf( stdout, 0, _IONBF, 0 );
+	setvbuf( stdin, 0, _IONBF, 0 );
 
 }

@@ -6,11 +6,11 @@
 #include <narwhal_ADC.h>
 #include <narwhal_I2C.h>
 #include <sensors.h>
+#include <stdio.h>
 
 OS_STK *narwhalINSStack;
+INS_Orientation OrientationValues __attribute__ ((section(".ccm")));
 #define DEBUG 1
-
-struct INS_Orientation OrientationValues;
 
 //Shoudl be ready for analog and digital readings with a few changes
 void INS_Init_Task(void)
@@ -19,8 +19,10 @@ void INS_Init_Task(void)
 	U64 ticks = 0;
 	sync_printf("Init INS starting \r\n");
 
-	printf("HIHIHI");
-	CoTickDelay(100);
+	/*reset all values to 0*/
+	memset(&OrientationValues, 0, sizeof(OrientationValues));
+
+	CoTickDelay(10);
 	//TODO: Init task
 
 	while (1)
@@ -77,9 +79,9 @@ static void INS_Sensor_ValueCalibrate(U64 ticks)
 		OrientationValues.magz[currAvgIdx] = mz;
 
 		/*get the average of the current sample*/
-		OrientationValues.avg_magx = OrientationValues.avg_magx_sum / (double)AVERAGE_SAMPLES;
-		OrientationValues.avg_magy = OrientationValues.avg_magy_sum / (double)AVERAGE_SAMPLES;
-		OrientationValues.avg_magz = OrientationValues.avg_magz_sum / (double)AVERAGE_SAMPLES;
+		OrientationValues.avg_magx = OrientationValues.avg_magx_sum / (double) AVERAGE_SAMPLES;
+		OrientationValues.avg_magy = OrientationValues.avg_magy_sum / (double) AVERAGE_SAMPLES;
+		OrientationValues.avg_magz = OrientationValues.avg_magz_sum / (double) AVERAGE_SAMPLES;
 
 #ifdef DEBUG
 		//async_printf("mag x: %f, y: %f, z: %f, %lld\r\n", x, y, z, CoGetOSTime());
@@ -99,10 +101,14 @@ static void INS_Sensor_ValueCalibrate(U64 ticks)
 	ax = ax + p[IMU_ACC_BIAS_X];
 	ay = ay + p[IMU_ACC_BIAS_Y];
 	az = az + p[IMU_ACC_BIAS_Z];
-	OrientationValues.gyrox = gx + p[IMU_GYO_BIAS_X];
-	OrientationValues.gyroy = gy + p[IMU_GYO_BIAS_Y];
-	OrientationValues.gyroz = gz + p[IMU_GYO_BIAS_Z];
 	tempst = (tempst - ADC_TEMP_REF) / ADC_MVC + ADC_TEMP_SHIFT;
+
+	/*gyros do not need to be averaged, just temp calibrated.
+	 * TODO: Temperature calibration
+	 * */
+	OrientationValues.avg_gyrox = gx + p[IMU_GYO_BIAS_X];
+	OrientationValues.avg_gyroy = gy + p[IMU_GYO_BIAS_Y];
+	OrientationValues.avg_gyroz = gz + p[IMU_GYO_BIAS_Z];
 
 	/*subtract current average index from average values*/
 	OrientationValues.avg_accx_sum -= OrientationValues.accx[currAvgIdx];
@@ -116,11 +122,18 @@ static void INS_Sensor_ValueCalibrate(U64 ticks)
 	OrientationValues.avg_accz_sum += az;
 	OrientationValues.avg_temperatureST_sum += tempst;
 
-	/*set current average index with current value*/
+	/*ACCLERMETER: set current average index with current value*/
 	OrientationValues.accx[currAvgIdx] = ax;
 	OrientationValues.accy[currAvgIdx] = ay;
 	OrientationValues.accz[currAvgIdx] = az;
 	OrientationValues.temperatureST[currAvgIdx] = tempst;
+
+	/*IF WE ARE NOT DOING ANYTHING, then DO THIS CALIBRATION ROUTINE*/
+	/*GYROSCOPE: set current average index with current value*/
+	OrientationValues.gyrox[currAvgIdx] = gx;
+	OrientationValues.gyroy[currAvgIdx] = gy;
+	OrientationValues.gyroz[currAvgIdx] = gz;
+	INS_Sensor_Static();
 
 	OrientationValues.avg_accx = OrientationValues.avg_accx_sum / AVERAGE_SAMPLES;
 	OrientationValues.avg_accy = OrientationValues.avg_accy_sum / AVERAGE_SAMPLES;
@@ -128,12 +141,19 @@ static void INS_Sensor_ValueCalibrate(U64 ticks)
 	OrientationValues.avg_temperatureST = OrientationValues.avg_temperatureST_sum / AVERAGE_SAMPLES;
 
 #ifdef DEBUG
-	async_printf("%f %f %f %f %f %f %f\r\n", OrientationValues.avg_accx, OrientationValues.avg_accy, OrientationValues.avg_accz, OrientationValues.gyrox, OrientationValues.gyroy, OrientationValues.gyroz, OrientationValues.avg_temperatureST);
+	async_printf("%f %f %f %f %f %f %f\r\n", OrientationValues.avg_accx_sum, OrientationValues.avg_accy, OrientationValues.avg_accz, OrientationValues.avg_gyrox, OrientationValues.avg_gyroy, OrientationValues.avg_gyroz, OrientationValues.avg_temperatureST);
 	//async_printf("Acc x: %f, y: %f, z: %f, GYRO x: %f, y: %f, z: %f\r\n", OrientationValues.accx, OrientationValues.accy, OrientationValues.accz,OrientationValues.gyrox,OrientationValues.gyroy,OrientationValues.gyroz);
 #endif
 }
 
-static void INS_Sensor_Calibrate(void)
+/*record temperature and value and update the calibration table*/
+static void INS_Sensor_Static(void)
 {
-
+	float gyroxstd, gyroystd, gyrozstd;
+	arm_std_f32(OrientationValues.gyrox,10,&gyroxstd);
+	if(gyroxstd < 0.00500f)
+	{
+		CoWaitForSingleFlag(ADC_FLAG, 0);
+	}
+	printf("STD: %f\r\n",gyroxstd);
 }
