@@ -9,7 +9,7 @@
 #include <stdio.h>
 
 OS_STK *narwhalINSStack;
-INS_Orientation OrientationValues __attribute__ ((section(".ccm")));
+INS_Orientation OrientationValues;
 #define DEBUG 1
 
 //Shoudl be ready for analog and digital readings with a few changes
@@ -150,10 +150,12 @@ static void INS_Sensor_ValueCalibrate(U64 ticks)
 static void INS_Sensor_Static(void)
 {
 	float gyroxstd, gyroystd, gyrozstd;
-	arm_std_f32(OrientationValues.gyrox,10,&gyroxstd);
+	arm_std_f32(OrientationValues.gyrox,AVERAGE_SAMPLES,&gyroxstd);
+	arm_std_f32(OrientationValues.gyroy,AVERAGE_SAMPLES,&gyroystd);
+	arm_std_f32(OrientationValues.gyroz,AVERAGE_SAMPLES,&gyrozstd);
 	if(gyroxstd < 0.00500f)
 	{
 		CoWaitForSingleFlag(ADC_FLAG, 0);
 	}
-	printf("STD: %f\r\n",gyroxstd);
+	printf("STD: %f, %f, %f\r\n",gyroxstd, gyroystd, gyrozstd);
 }
