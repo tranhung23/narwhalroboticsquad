@@ -20,7 +20,7 @@ void INS_Init_Task(void)
 	StatusType result;
 	U64 ticks = 0;
 	sync_printf("Init INS starting \r\n");
-
+	//navUkfInit();
 	/*reset all values to 0*/
 	memset(&OrientationValues, 0, sizeof(OrientationValues));
 	memset(&Calibration_SS, 0, sizeof(Calibration_SS));
@@ -42,12 +42,17 @@ void INS_Init_Task(void)
 		result = CoWaitForSingleFlag(ADC_FLAG, 0);
 		/*Convert all the ADC values to understandalbe values*/
 		INS_Sensor_ValueCalibrate(ticks);
+
+		//navUkfInertialUpdate();
+		//simDoAccUpdate(OrientationValues.avg_accx,OrientationValues.avg_accy,OrientationValues.avg_accz);
+
+
 		/*Loop update process*/
 		ticks++;
 	}
 }
 
-static void INS_Sensor_ValueCalibrate(U64 ticks)
+void INS_Sensor_ValueCalibrate(U64 ticks)
 {
 	/*Current values are now in volts*/
 	StatusType result;
@@ -160,7 +165,7 @@ static void INS_Sensor_ValueCalibrate(U64 ticks)
 }
 
 /*record temperature and value and update the calibration table*/
-static void INS_Sensor_Static(void)
+void INS_Sensor_Static(void)
 {
 	float acc_xstd, acc_ystd, acc_zstd;
 

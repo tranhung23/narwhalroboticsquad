@@ -32,9 +32,6 @@
 #include <narwhal_USART.h>
 #include <narwhal_utils.h>
 
-#ifndef MATH_PI
-#define MATH_PI			3.14159265f
-#endif
 
 #endif
 

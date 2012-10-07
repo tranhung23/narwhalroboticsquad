@@ -7,7 +7,7 @@
 #define NONREADY_STATE 0
 
 
-#define INIT_STACK_SIZE   128
+#define INIT_STACK_SIZE   64
 #define INIT_PRIORITY	    12
 extern OS_STK *narwhalInitStack;
 
