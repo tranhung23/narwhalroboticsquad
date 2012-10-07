@@ -37,7 +37,6 @@
         <include name="**/*.c"/>
         <include name="**/*.cpp"/>
         <include name="**/*.s"/>
-        <exclude name="filtering\ukf_measurement_attitude.c"/>
       </fileset>
       <project outfile="${project.name}.elf" overwrite="true" type="xcode"/>
       
@@ -84,8 +83,8 @@
       <compilerarg value="-Wall"/>
       <compilerarg value="-mthumb"/>
       <compilerarg value="-fsingle-precision-constant"/>
-      <compilerarg value="-mfpu=fpv4-sp-d16"/>
       
+      <compilerarg value="-mfpu=fpv4-sp-d16"/>
       <compilerarg value="-mfloat-abi=softfp"/>
       <compilerarg value="-std=c99"/>
       

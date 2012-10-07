@@ -10,8 +10,8 @@
 #include <stdio.h>
 
 OS_STK *narwhalINSStack;
-INS_Orientation OrientationValues __attribute__ ((section(".ccm")));
-Calibration_SampleSpace Calibration_SS __attribute__ ((section(".ccm")));
+INS_Orientation OrientationValues;
+Calibration_SampleSpace Calibration_SS;
 #define DEBUG 1
 
 //Shoudl be ready for analog and digital readings with a few changes
@@ -20,12 +20,13 @@ void INS_Init_Task(void)
 	StatusType result;
 	U64 ticks = 0;
 	sync_printf("Init INS starting \r\n");
-	//navUkfInit();
+
 	/*reset all values to 0*/
 	memset(&OrientationValues, 0, sizeof(OrientationValues));
 	memset(&Calibration_SS, 0, sizeof(Calibration_SS));
 
 	CoTickDelay(10);
+
 	//TODO: Init task
 
 	while (1)
@@ -159,7 +160,8 @@ void INS_Sensor_ValueCalibrate(U64 ticks)
 
 #ifdef DEBUG
 	if(ticks%10 == 0)
-	async_printf("%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%u \r\n", OrientationValues.avg_accx, OrientationValues.avg_accy, OrientationValues.avg_accz, OrientationValues.avg_gyrox, OrientationValues.avg_gyroy, OrientationValues.avg_gyroz,OrientationValues.avg_magx,OrientationValues.avg_magy,OrientationValues.avg_magz, OrientationValues.avg_temperatureST, OrientationValues.dt);
+		async_printf("%f", ax);
+	//async_printf("%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%u \r\n", OrientationValues.avg_accx, OrientationValues.avg_accy, OrientationValues.avg_accz, OrientationValues.avg_gyrox, OrientationValues.avg_gyroy, OrientationValues.avg_gyroz,OrientationValues.avg_magx,OrientationValues.avg_magy,OrientationValues.avg_magz, OrientationValues.avg_temperatureST, OrientationValues.dt);
 	//async_printf("Acc x: %f, y: %f, z: %f, GYRO x: %f, y: %f, z: %f\r\n", OrientationValues.accx, OrientationValues.accy, OrientationValues.accz,OrientationValues.gyrox,OrientationValues.gyroy,OrientationValues.gyroz);
 #endif
 }

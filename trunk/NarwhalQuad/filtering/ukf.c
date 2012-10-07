@@ -21,7 +21,6 @@
 
 navUkfStruct_t navUkfData;
 
-
 /*Init UKF*/
 void navUkfInit(void)
 {

@@ -23,7 +23,7 @@
 #include <CoOS.h>
 
 //#define FPU_SOFT
-#define FPU_HARD
+//#define FPU_HARD
 //#define FPU_LAZY_SWITCH
 
 #define __fpu_enable()	    __asm__ __volatile__ ("LDR.W    R0, =0xE000ED88 \n"		\
