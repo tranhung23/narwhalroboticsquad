@@ -50,13 +50,13 @@ SECTIONS
     /* stack section */
     .co_stack (NOLOAD):
     {
-        . = ALIGN(8);
+        . = ALIGN(4);
         *(.co_stack .co_stack.*)
     } > ram
     
      .ccm (NOLOAD):
     {
-        . = ALIGN(8);
+        . = ALIGN(4);
         *(.ccm .ccm.*)
     } > ram1
        
