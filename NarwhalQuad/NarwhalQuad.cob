@@ -12,6 +12,8 @@
     <Component id="84e75f20-cfed-11e1-b060-00e04cc78a1a" name="RCC"/>
     <Component id="9c3f1e00-d0ac-11e1-918f-60eb69f2f4ad" name="GPIO"/>
   </Components>
-  <ExcludedFiles/>
+  <ExcludedFiles>
+    <Exclude path="F:\_DEV\narwhalroboticsquad\NarwhalQuad\filtering\ukf_measurement_attitude.c"/>
+  </ExcludedFiles>
   <Drivers/>
 </Project>

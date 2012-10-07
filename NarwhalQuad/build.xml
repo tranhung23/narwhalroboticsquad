@@ -37,6 +37,7 @@
         <include name="**/*.c"/>
         <include name="**/*.cpp"/>
         <include name="**/*.s"/>
+        <exclude name="filtering\ukf_measurement_attitude.c"/>
       </fileset>
       <project outfile="${project.name}.elf" overwrite="true" type="xcode"/>
       
@@ -67,6 +68,8 @@
       <includepath path="OS/Addon"/>
       <includepath path="User_Lib/Control"/>
       <includepath path="DSP_Lib"/>
+      <includepath path="filtering"/>
+      <includepath path="User"/>
       
       <!-- arm-none-eabi-gcc compiler arguments -->
       <compilerarg value="-mcpu=cortex-m4"/>
@@ -94,7 +97,7 @@
       <linkerarg value="-mthumb"/>
       <linkerarg value="-L${linkdir}"/>
       
-      <linkerarg value="-TC:\_dev\narwhalroboticsquad\NarwhalQuad\arm-gcc-link.ld"/>
+      <linkerarg value="-TF:\_DEV\narwhalroboticsquad\NarwhalQuad\arm-gcc-link.ld"/>
       <linkerarg value="--gc-sections"/>
       <linkerarg value="-lgcc"/>
       <linkerarg value="-lc"/>

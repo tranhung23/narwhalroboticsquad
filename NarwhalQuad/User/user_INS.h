@@ -1,4 +1,10 @@
+
+#ifndef user_INS_h
+#define user_INS_h
+
+
 #include <narwhal_top.h>
+#include <ukf.h>
 
 extern OS_STK *narwhalINSStack;
 
@@ -55,7 +61,7 @@ typedef struct INS_Orientation
 	float avg_temperatureST;
 
 	uint32_t dt;
-	//uint32_t lastSample;
+	uint32_t lastSample;
 
 } INS_Orientation;
 
@@ -70,7 +76,9 @@ typedef struct Calibration_SampleSpace
 } Calibration_SampleSpace;
 
 extern INS_Orientation OrientationValues;
-static void INS_Sensor_ValueCalibrate(U64 ticks);
-static void INS_Sensor_Static(void);
+extern void INS_Sensor_ValueCalibrate(U64 ticks);
+extern void INS_Sensor_Static(void);
 
 void INS_Init_Task(void);
+
+#endif
