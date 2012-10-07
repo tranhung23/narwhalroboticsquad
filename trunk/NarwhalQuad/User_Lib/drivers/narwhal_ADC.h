@@ -29,7 +29,7 @@
  */
 
 #define ADC_SAMPLE_TICKS 		ADC_SampleTime_28Cycles
-#define ADC_ITERATIONS			140
+#define ADC_ITERATIONS			131
 
 #define ADC_SENSOR_NUM			7
 #define ADC_SAMPLE_NUM			16
@@ -38,7 +38,7 @@
 #define ADC_RESOLUTION			12
 #define ADC_SAMPLE_CNT			5 /*Number of samples each IRQ*/
 
-#define ADC_REF_V		3.3f
+#define ADC_REF_V		3.300f
 #define ADC_DIVISOR		(((double)ADC_REF_V / (double)(1<<ADC_RESOLUTION) / (double)ADC_ITERATIONS))/(double)ADC_SAMPLE_CNT
 
 
@@ -73,6 +73,8 @@ typedef struct FilteredADCStruct{
 	uint32_t adcSum[ADC_SENSOR_NUM]; /*the sum to use is placed here*/
 	uint32_t adcIRQSum[ADC_SENSOR_NUM]; /*running totoal during IRQ*/
 	__IO int adcIRQIterations; /*number of IRQ iterations*/
+	uint32_t dt;
+	uint32_t previousSample;
 }FilteredADCStruct;
 
 extern RawADCStruct RawADCData;

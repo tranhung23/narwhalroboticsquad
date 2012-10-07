@@ -1,13 +1,17 @@
-#include "user_start.h"
 #include <narwhal_GPIO.h>
 #include <narwhal_I2C.h>
 #include <narwhal_BTN.h>
-#include <settings.h>
+#include <narwhal_MICRO_TIMER.h>
 #include <narwhal_TIMER.h>
+#include <narwhal_ADC.h>
+
+#include "user_start.h"
+
 #include <stdio.h>
+#include <settings.h>
 #include <sensors.h>
 #include <RC_Control.h>
-#include <narwhal_ADC.h>
+
 
 #define PRINTFLASH 1
 
@@ -47,7 +51,7 @@ void Drivers_Init_Task(void) {
 #endif
 	/*USART*/
 	COMInit(USART_COM1);
-	//configFlashWrite();
+	configFlashWrite();
 	configFlashRead();
 #ifdef PRINTFLASH
 	for (int i = 0; i < CONFIG_NUM_PARAMS; i++)
@@ -75,6 +79,8 @@ void Drivers_Init_Task(void) {
 	TIM_PWM_Ctrl_In_Init(CH3);
 	TIM_PWM_Ctrl_In_Init(CH4);
 
+	/*us counter*/
+	usTimerInit();
 	//CoExitTask();
 	//TIM_Init();
 
@@ -82,5 +88,4 @@ void Drivers_Init_Task(void) {
 
 	setvbuf( stdout, 0, _IONBF, 0 );
 	setvbuf( stdin, 0, _IONBF, 0 );
-
 }

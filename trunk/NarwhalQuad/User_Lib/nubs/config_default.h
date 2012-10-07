@@ -41,7 +41,7 @@
 #define DEFAULT_IMU_MAG_CALI_ZZ     0.0
 
 #define DEFAULT_IMU_GYO_500DPS      17.50
-#define DEFAULT_IMU_GYO_DEGLSB      (1/2) /*2 mw for one degree*/
+#define DEFAULT_IMU_GYO_DEGLSB      500.0 /*2 mw for one degree*/
 #define DEFAULT_IMU_GYO_BIAS_X      -1.37865199515738
 #define DEFAULT_IMU_GYO_BIAS_Y      -1.35971325060533
 #define DEFAULT_IMU_GYO_BIAS_Z      -1.36872717675545

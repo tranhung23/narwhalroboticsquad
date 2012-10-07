@@ -6,6 +6,7 @@
  */
 
 #include "narwhal_ADC.h"
+#include "narwhal_MICRO_TIMER.h"
 
 /*TODO: clean up code*/
 
@@ -22,7 +23,7 @@
 /*Clock is APB2/2 > (168/2)/2 mhz */
 
 struct RawADCStruct RawADCData;
-struct FilteredADCStruct FilteringADCData;
+struct FilteredADCStruct FilteringADCData  __attribute__ ((section(".ccm")));
 OS_FlagID ADC_FLAG;
 
 void ADC_SENSOR_Init(void)
@@ -251,6 +252,10 @@ void ADC_Interrupt(void)
 			*sumbuffer++ = *sum;
 			*sum++ = 0;
 		}
+
+		FilteringADCData.dt = uTicks() - FilteringADCData.previousSample;
+		FilteringADCData.previousSample = uTicks();
+
 		CoEnterISR();
 		isr_SetFlag(ADC_FLAG);
 		CoExitISR();

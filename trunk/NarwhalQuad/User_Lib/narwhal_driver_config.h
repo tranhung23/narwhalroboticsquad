@@ -281,7 +281,6 @@
  */
 
 /*1 mhz*/
-#define TIM3_FREQ						1000000
 #define RC_TIMERS_FREQ					1000000
 
 #define RCn                            4
@@ -360,21 +359,38 @@
 #define RC4_TIMER_CHF					TIM_Channel_3	//Channel Falling
 #define RC4_TIMER_IRQ					TIM_IT_CC3
 
-/*
- * TIMER defines
- */
-#define TIM_I2C1_READ_CLK					RCC_APB1Periph_TIM3
-#define TIM_I2C1_READ						TIM3
-#define TIM_I2C1_READ_IRQn					TIM3_IRQn
-#define TIM_I2C1_READ_PREPRIO               4
-#define TIM_I2C1_READ_SUBPRIO               0
 
-/*Timer is running at 1mhz, so each division is 1uS*/
-#define CCR1_Val 	 40961 /**/
-#define CCR2_Val 	 5555 /*HMC data rate - 100 hz*/
-#define CCR3_Val 	 2700 /*AXDL data rate 400 hz*/
-#define CCR4_Val	 2000 /*ITG 3200 at 2khz*/
+#define RC4_TIMER						TIM4
+#define RC4_TIMER_CLK					RCC_APB1Periph_TIM4
+#define RC4_TIMER_IRQn					TIM4_IRQn
+#define RC4_TIMER_IRQ_PREPRIO			RC_TIMER_IRQ_PREPRIO
+#define RC4_TIMER_IRQ_SUBPRIO			12
 
-#define Sensors_IRQHandler	TIM3_IRQHandler
+#define usTimer_IRQHandler 					TIM5_IRQHandler
+
+#define MICROS_TIMER_TIMEBASE				1000000
+#define MICROS_TIMER						TIM5
+#define MICROS_TIMER_CLK					RCC_APB1Periph_TIM5
+#define MICROS_TIMER_IRQn					TIM5_IRQn
+#define MICROS_TIMER_IRQ_PREPRIO			2
+#define MICROS_TIMER_IRQ_SUBPRIO			0
+
+
+///*
+// * TIMER defines
+// */
+//#define TIM_I2C1_READ_CLK					RCC_APB1Periph_TIM3
+//#define TIM_I2C1_READ						TIM3
+//#define TIM_I2C1_READ_IRQn					TIM3_IRQn
+//#define TIM_I2C1_READ_PREPRIO               4
+//#define TIM_I2C1_READ_SUBPRIO               0
+//
+///*Timer is running at 1mhz, so each division is 1uS*/
+//#define CCR1_Val 	 40961 /**/
+//#define CCR2_Val 	 5555 /*HMC data rate - 100 hz*/
+//#define CCR3_Val 	 2700 /*AXDL data rate 400 hz*/
+//#define CCR4_Val	 2000 /*ITG 3200 at 2khz*/
+//
+//#define Sensors_IRQHandler	TIM3_IRQHandler
 
 #endif

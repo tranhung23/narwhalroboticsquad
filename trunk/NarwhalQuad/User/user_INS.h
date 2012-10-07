@@ -15,6 +15,9 @@ extern OS_STK *narwhalINSStack;
 #define TEMPST		6
 
 #define AVERAGE_SAMPLES	12
+#define TEMP_CALIBRATION_SAMPLE 50 /*100 samples*/
+
+#define STEADY_STATE_STD_ACC 0.00050f
 
 typedef struct INS_Orientation
 {
@@ -51,7 +54,20 @@ typedef struct INS_Orientation
 	float avg_magz;
 	float avg_temperatureST;
 
+	uint32_t dt;
+	//uint32_t lastSample;
+
 } INS_Orientation;
+
+typedef struct Calibration_SampleSpace
+{
+	float calibration_temperature;
+	uint32_t calibration_samplecnt;
+	float gyro_x_samplespace[AVERAGE_SAMPLES*TEMP_CALIBRATION_SAMPLE];
+	float gyro_y_samplespace[AVERAGE_SAMPLES*TEMP_CALIBRATION_SAMPLE];
+	float gyro_z_samplespace[AVERAGE_SAMPLES*TEMP_CALIBRATION_SAMPLE];
+
+} Calibration_SampleSpace;
 
 extern INS_Orientation OrientationValues;
 static void INS_Sensor_ValueCalibrate(U64 ticks);
