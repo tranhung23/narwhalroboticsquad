@@ -16,9 +16,14 @@ extern OS_STK *narwhalInitStack;
 extern OS_STK *narwhalControlStack;
 
 
-#define INS_STACK_SIZE   1024
+#define INS_STACK_SIZE   512
 #define INS_PRIORITY	    6
 extern OS_STK *narwhalINSStack;
+
+#define UKF_STACK_SIZE   512
+#define UKF_PRIORITY	    5
+extern OS_STK *narwhalUKFStack;
+
 
 extern OS_STK *LEDSignalStack;
 

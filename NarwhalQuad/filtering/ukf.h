@@ -91,7 +91,7 @@
 
 #define UKF_P0			101325.0f		    // standard static pressure at sea level
 
-typedef struct {
+typedef struct navUkfStruct_t{
     srcdkf_t *kf;
     float v0a[3];
     float v0m[3];

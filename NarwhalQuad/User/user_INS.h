@@ -21,7 +21,7 @@ extern OS_STK *narwhalINSStack;
 #define TEMPST		6
 
 #define AVERAGE_SAMPLES	12
-#define TEMP_CALIBRATION_SAMPLE 50 /*100 samples*/
+#define TEMP_CALIBRATION_SAMPLE 25 /*100 samples*/
 
 #define STEADY_STATE_STD_ACC 0.00050f
 
@@ -61,7 +61,7 @@ typedef struct INS_Orientation
 	float avg_temperatureST;
 
 	uint32_t dt;
-	uint32_t lastSample;
+	//uint32_t lastSample;
 
 } INS_Orientation;
 
