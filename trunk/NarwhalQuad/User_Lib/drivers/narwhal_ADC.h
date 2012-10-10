@@ -64,10 +64,7 @@
 
 //static __IO uint16_t ADCDualConvertedValue[ADC_SAMPLE_NUM];
 
-typedef struct RawADCStruct{
-    uint16_t adcRaw1[ADC_SAMPLE_NUM*ADC_NUM];
-    uint16_t adcRaw2[ADC_SAMPLE_NUM*ADC_NUM];
-} RawADCStruct;
+
 
 typedef struct FilteredADCStruct{
 	uint32_t adcSum[ADC_SENSOR_NUM]; /*the sum to use is placed here*/
@@ -77,7 +74,7 @@ typedef struct FilteredADCStruct{
 	uint32_t previousSample;
 }FilteredADCStruct;
 
-extern RawADCStruct RawADCData;
+
 extern FilteredADCStruct FilteringADCData;
 
 void ADC_Sensor_DMA_Config(void);

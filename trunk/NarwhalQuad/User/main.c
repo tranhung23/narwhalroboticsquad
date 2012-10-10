@@ -5,7 +5,11 @@
 
 #include "user_INS.h"
 #include "user_control.h"
+<<<<<<< .mine
+#include "user_ukf.h"
+=======
 #include "user_UKF.h"
+>>>>>>> .r25
 
 #include <../example/IOToggle.h>
 
@@ -40,9 +44,15 @@ int main(void)
 	narwhalINSStack = narwhalStackInit(INS_STACK_SIZE);
 	CoCreateTask((FUNCPtr)INS_Init_Task, (void *)0, INS_PRIORITY, &narwhalINSStack[INS_STACK_SIZE-1], INS_STACK_SIZE);
 
+<<<<<<< .mine
+	narwhalUKFStack = narwhalStackInit(UKF_STACK_SIZE);
+	CoCreateTask((FUNCPtr)UKF_Init_Task, (void *)0, UKF_PRIORITY, &narwhalUKFStack[UKF_STACK_SIZE-1], UKF_STACK_SIZE);
+
+=======
 	narwhalUKFStack = narwhalStackInit(UKF_STACK_SIZE);
 	CoCreateTask((FUNCPtr)UKF_Init_Task, (void *)0, INS_PRIORITY, &narwhalUKFStack[UKF_STACK_SIZE-1], UKF_STACK_SIZE);
 
+>>>>>>> .r25
 	CoStartOS();
 
 	return 0;

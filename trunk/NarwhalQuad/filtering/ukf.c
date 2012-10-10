@@ -28,7 +28,7 @@ void navUkfInit(void)
 	float V[SIM_V]; // process variance
 	float mag[3];
 
-	memset((void *) &navUkfData, 0, sizeof(navUkfData));
+	//memset((void *) &navUkfData, 0, sizeof(navUkfData));
 
 	navUkfData.v0a[0] = 0.0f;
 	navUkfData.v0a[1] = 0.0f;
@@ -44,9 +44,9 @@ void navUkfInit(void)
 	//navUkfData.v0m[1] = mag[1] * cosf(p[IMU_MAG_DECL] * DEG_TO_RAD) + mag[0] * sinf(p[IMU_MAG_DECL] * DEG_TO_RAD);
 	//navUkfData.v0m[2] = mag[2];
 
-	navUkfData.kf = srcdkfInit(SIM_S, SIM_M, SIM_V, SIM_N, navUkfTimeUpdate);
+	//navUkfData.kf = srcdkfInit(SIM_S, SIM_M, SIM_V, SIM_N, navUkfTimeUpdate);
 
-	navUkfData.x = srcdkfGetState(navUkfData.kf);
+	//navUkfData.x = srcdkfGetState(navUkfData.kf);
 
 	Q[0] = p[UKF_VEL_Q];
 	Q[1] = p[UKF_VEL_Q];
@@ -83,9 +83,9 @@ void navUkfInit(void)
 	V[14] = p[UKF_POS_V];
 	V[15] = p[UKF_ALT_POS_V];
 
-	srcdkfSetVariance(navUkfData.kf, Q, V, 0, 0);
+	//srcdkfSetVariance(navUkfData.kf, Q, V, 0, 0);
 
-	navUkfInitState();
+	//navUkfInitState();
 
 }
 

@@ -27,7 +27,9 @@ extern OS_STK *narwhalUKFStack;
 
 extern OS_STK *LEDSignalStack;
 
-
+#define UKF_STACK_SIZE   512
+#define UKF_PRIORITY        30
+extern OS_STK *narwhalUKFStack;
 
 
 /****************************************************************/

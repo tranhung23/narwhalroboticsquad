@@ -6,6 +6,9 @@
 #include <narwhal_top.h>
 #include <ukf.h>
 
+#ifndef NARWHAL_INS
+#define NARWHAL_INS
+
 extern OS_STK *narwhalINSStack;
 
 #define MARG_NUM	9	/*number of sensors*/
