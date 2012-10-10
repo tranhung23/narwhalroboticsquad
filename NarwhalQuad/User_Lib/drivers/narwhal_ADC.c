@@ -22,7 +22,11 @@
 
 /*Clock is APB2/2 > (168/2)/2 mhz */
 
-struct RawADCStruct RawADCData;
+struct {
+    uint16_t adcRaw1[ADC_SAMPLE_NUM*ADC_NUM];
+    uint16_t adcRaw2[ADC_SAMPLE_NUM*ADC_NUM];
+} RawADCData;
+
 struct FilteredADCStruct FilteringADCData  __attribute__ ((section(".ccm")));
 OS_FlagID ADC_FLAG;
 
@@ -211,10 +215,10 @@ void ADC_print(void)
 
 void ADC_Interrupt(void)
 {
-	register uint32_t flag = DMA2->LISR;
-	register uint16_t *adcValue;
-	register uint32_t *sum, *sumbuffer;
-	register int i;
+	 uint32_t flag = DMA2->LISR;
+	 uint16_t *adcValue;
+	 uint32_t *sum, *sumbuffer;
+	 int i;
 
 	// clear intr flags
 	DMA2->LIFCR = (uint32_t) (DMA_IT_TEIF0 | DMA_IT_DMEIF0 | DMA_IT_FEIF0 | DMA_IT_TCIF0 | DMA_IT_HTIF0);

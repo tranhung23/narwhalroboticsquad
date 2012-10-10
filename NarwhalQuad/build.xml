@@ -67,8 +67,12 @@
       <includepath path="OS/Addon"/>
       <includepath path="User_Lib/Control"/>
       <includepath path="DSP_Lib"/>
+<<<<<<< .mine
+      <includepath path="User"/>
+=======
       <includepath path="filtering"/>
       <includepath path="User"/>
+>>>>>>> .r25
       
       <!-- arm-none-eabi-gcc compiler arguments -->
       <compilerarg value="-mcpu=cortex-m4"/>
@@ -85,7 +89,7 @@
       <compilerarg value="-fsingle-precision-constant"/>
       
       <compilerarg value="-mfpu=fpv4-sp-d16"/>
-      <compilerarg value="-mfloat-abi=softfp"/>
+      <compilerarg value="-mfloat-abi=hard"/>
       <compilerarg value="-std=c99"/>
       
       <!-- arm-none-eabi-gcc linker arguments -->

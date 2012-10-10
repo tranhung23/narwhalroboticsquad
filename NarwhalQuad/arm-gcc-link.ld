@@ -1,4 +1,4 @@
-OUTPUT_FORMAT ("elf32-littlearm", "elf32-bigarm", "elf32-littlearm")
+OUTPUT_FORMAT ("elf32-littlearm", "elf32-littlearm", "elf32-littlearm")
 SEARCH_DIR(.)
 INCLUDE "memory.ld"
 
@@ -58,7 +58,7 @@ SECTIONS
     {
         . = ALIGN(4);
         *(.ccm .ccm.*)
-    } > ram1
+    } > ram
        
     . = ALIGN(4); 
     

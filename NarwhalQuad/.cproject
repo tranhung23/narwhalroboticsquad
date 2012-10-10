@@ -48,6 +48,27 @@
 			<storageModule moduleId="org.eclipse.cdt.internal.ui.text.commentOwnerProjectMappings"/>
 			<storageModule moduleId="org.eclipse.cdt.core.pathentry">
 				<pathentry kind="src" path=""/>
+<<<<<<< .mine
+				<pathentry include="F:/Applications/GCC/arm-none-eabi/include" kind="inc" path="" system="true"/>
+				<pathentry include="F:/Applications/GCC/lib/gcc/arm-none-eabi/4.6.2/include" kind="inc" path="" system="true"/>
+				<pathentry include="F:/Applications/GCC/lib/gcc/arm-none-eabi/4.6.2/include-fixed" kind="inc" path="" system="true"/>
+				<pathentry include="F:/_DEV/narwhalroboticsquad/NarwhalQuad" kind="inc" path="" system="true"/>
+				<pathentry include="F:/_DEV/narwhalroboticsquad/NarwhalQuad/cmsis" kind="inc" path="" system="true"/>
+				<pathentry include="F:/_DEV/narwhalroboticsquad/NarwhalQuad/cmsis_boot" kind="inc" path="" system="true"/>
+				<pathentry include="F:/_DEV/narwhalroboticsquad/NarwhalQuad/cmsis_lib" kind="inc" path="" system="true"/>
+				<pathentry include="F:/_DEV/narwhalroboticsquad/NarwhalQuad/cmsis_lib/include" kind="inc" path="" system="true"/>
+				<pathentry include="F:/_DEV/narwhalroboticsquad/NarwhalQuad/DSP_Lib" kind="inc" path="" system="true"/>
+				<pathentry include="F:/_DEV/narwhalroboticsquad/NarwhalQuad/OS" kind="inc" path="" system="true"/>
+				<pathentry include="F:/_DEV/narwhalroboticsquad/NarwhalQuad/OS/Addon" kind="inc" path="" system="true"/>
+				<pathentry include="F:/_DEV/narwhalroboticsquad/NarwhalQuad/OS/kernel" kind="inc" path="" system="true"/>
+				<pathentry include="F:/_DEV/narwhalroboticsquad/NarwhalQuad/OS/portable" kind="inc" path="" system="true"/>
+				<pathentry include="F:/_DEV/narwhalroboticsquad/NarwhalQuad/User" kind="inc" path="" system="true"/>
+				<pathentry include="F:/_DEV/narwhalroboticsquad/NarwhalQuad/User_Lib" kind="inc" path="" system="true"/>
+				<pathentry include="F:/_DEV/narwhalroboticsquad/NarwhalQuad/User_Lib/Control" kind="inc" path="" system="true"/>
+				<pathentry include="F:/_DEV/narwhalroboticsquad/NarwhalQuad/User_Lib/drivers" kind="inc" path="" system="true"/>
+				<pathentry include="F:/_DEV/narwhalroboticsquad/NarwhalQuad/User_Lib/nubs" kind="inc" path="" system="true"/>
+				<pathentry include="F:/_DEV/narwhalroboticsquad/NarwhalQuad/User_Lib/sensors" kind="inc" path="" system="true"/>
+=======
 				<pathentry include="F:/Applications/GCC/arm-none-eabi/include" kind="inc" path="" system="true"/>
 				<pathentry include="F:/Applications/GCC/lib/gcc/arm-none-eabi/4.6.2/include" kind="inc" path="" system="true"/>
 				<pathentry include="F:/Applications/GCC/lib/gcc/arm-none-eabi/4.6.2/include-fixed" kind="inc" path="" system="true"/>
@@ -68,6 +89,7 @@
 				<pathentry include="F:/_DEV/narwhalroboticsquad/NarwhalQuad/User_Lib/drivers" kind="inc" path="" system="true"/>
 				<pathentry include="F:/_DEV/narwhalroboticsquad/NarwhalQuad/User_Lib/nubs" kind="inc" path="" system="true"/>
 				<pathentry include="F:/_DEV/narwhalroboticsquad/NarwhalQuad/User_Lib/sensors" kind="inc" path="" system="true"/>
+>>>>>>> .r25
 				<pathentry kind="mac" name="__GNUC__" path="" value=""/>
 				<pathentry kind="mac" name="USE_STDPERIPH_DRIVER" path="" value=""/>
 				<pathentry kind="mac" name="ARM_MATH_CM4" path="" value=""/>
