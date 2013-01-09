@@ -34,7 +34,6 @@ t0 = clock;
 u=udp('127.0.0.1',9091);
 fopen(u);
 
-
 %%
 %UKF Vars
 n = 7;
@@ -47,20 +46,20 @@ x = [1;0;0;0;0;0;0];
 
 % initializing noise matrices
 % process noise
-Q = [0.000001, 0, 0, 0, 0, 0, 0;
-     0, 0.000001, 0, 0, 0, 0, 0;
-     0, 0, 0.000001, 0, 0, 0, 0;
-     0, 0, 0, 0.000001, 0, 0, 0;
-     0, 0, 0, 0, 0.0001, 0, 0; 
-     0, 0, 0, 0, 0, 0.0001, 0;
-     0, 0, 0, 0, 0, 0, 0.0001];
- Q = 3.4962e-005 * eye(n) * 10000;
+Q = [0.0818, 0, 0, 0, 0, 0, 0;
+     0, 0.0818, 0, 0, 0, 0, 0;
+     0, 0, 0.0818, 0, 0, 0, 0;
+     0, 0, 0, 0.0818, 0, 0, 0;
+     0, 0, 0, 0, 0.01, 0, 0; 
+     0, 0, 0, 0, 0, 0.01, 0;
+     0, 0, 0, 0, 0, 0, 0.01];
+% Q = 3.4962e-005 * eye(n) * 10000;
 
 % measurement noise
-R = [0.3, 0, 0;
-       0, 0.3, 0;
-       0, 0, 0.3];
-   R = 0.0383 * eye(m)*10;
+% acc_x, acc_y, acc_z, mag_x, mag_y, mag_z
+   R = [1;1;1;1;1;1];
+   R = 0.1*R;
+   %R = 0.0383 * eye(m)*10;
 
 
 P = [1, 0, 0, 0, 0, 0, 0;
@@ -70,10 +69,14 @@ P = [1, 0, 0, 0, 0, 0, 0;
      0, 0, 0, 0, 0.02, 0, 0; 
      0, 0, 0, 0, 0, 0.02, 0;
      0, 0, 0, 0, 0, 0, 0.02];
+ P = 1*eye(n);
+ 
+ qt = [0; 0; 0; 1];
+ z = 0;
 
 %% Start UKF
 while(true)
-    dt = 0.0002249;
+    dt = 0.02249;
     t0 = clock;
     
     % Gyro (3), Acclermeter (3), Magnotometer (3), Temperature (1), Time (1)
@@ -85,22 +88,22 @@ while(true)
     [accNorm, gyroFixed, magNorm] = readSensor(line, accRef, gyroRef, magC, magM);
     u = [accNorm; gyroFixed];
     
+     z = z + gyroFixed(1);
+     qt = ukfRotateQuat(qt,gyroFixed,dt);
+     
+     x = qt;
     
     %% estimation
     
-    [Xi W Wc] = SigmaPoints(x, P, 1e-6);
-    Xi
-    iteration = iteration+1;
-    continue;
-    fXi = zeros(n, 2*n+1);
-    for k = 1:2*n+1
-        fXi(:, k) = fx(Xi(:,k), Q, u, dt, GRAVITY);
-    end
-    [x P] = UT(fXi, W,Wc, Q);
+%      [Xi W Wc] = SigmaPoints(x, P, 1e-6);
+%      fXi = zeros(n, 2*n+1);
+%      for k = 1:2*n+1
+%          fXi(:, k) = fx(Xi(:,k), Q, u, dt, GRAVITY);
+%      end
+%      [x P] = UT(fXi, W,Wc, Q);
     %% update
-    [x P] = accUpdate(x, P, R, accNorm(1), accNorm(2), accNorm(3), m, n);
-    x
-%     [x P] = magUpdate(x, P, magNorm(1), magNorm(2), magNorm(3));
+    %[x P] = accUpdate(x, P, R, accNorm(1), accNorm(2), accNorm(3), m, n);
+    %[x P] = magUpdate(x, P, R, magNorm(1), magNorm(2), magNorm(3), m, n);
     
     
     %% quaternion to euler
@@ -118,7 +121,7 @@ while(true)
 %     pitch = pitch * 180 / pi;
 %     roll = roll * 180 / pi;
     
-    angleYaw(iteration) = yaw;
+    angleYaw(iteration) = z;
     anglePitch(iteration) = pitch;
     angleRoll(iteration) = roll;
     gyros(iteration) = gyroFixed(1);
